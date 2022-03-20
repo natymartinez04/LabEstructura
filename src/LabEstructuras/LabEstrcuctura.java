@@ -5,6 +5,10 @@
  */
 package LabEstructuras;
 
+import java.awt.Toolkit;
+import javax.swing.JFrame;
+import static javax.swing.JFrame.EXIT_ON_CLOSE;
+
 /**
  *
  * @author tllach, nmartinez, dkaty
@@ -15,7 +19,14 @@ public class LabEstrcuctura {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Display display = new Display();
+        Toolkit tk = Toolkit.getDefaultToolkit(); 
+        int xmax = (int) tk.getScreenSize().getWidth();  
+        int ymax = (int) tk.getScreenSize().getHeight(); 
+        JFrame display = new Display(xmax,ymax);
+        display.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        display.setSize(xmax,ymax);
+        display.setResizable(false);
+        display.setVisible(true);
     }
     
 }
