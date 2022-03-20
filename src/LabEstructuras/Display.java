@@ -5,9 +5,13 @@
  */
 package LabEstructuras;
 
+
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Font;
-import static java.awt.Frame.MAXIMIZED_BOTH;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
@@ -18,51 +22,56 @@ import javax.swing.JPanel;
  *
  * @author tllach, nmartinez, dkaty
  */
-public class Display {
+public class Display extends JFrame{
     
     JFrame frame;
     int xmax,ymax;
     JPanel panel;
-    JButton parte1B;
+    JButton parte1B,parte2B;
     JLabel titulo;
+    Container pane;
     
-    public Display(){
-        frame = new JFrame();
-        panel = new JPanel();
+    public Display(int xmax,int ymax){
+        this.xmax = xmax;
+        this.ymax = ymax;
         parte1B = new JButton();
+        parte2B = new JButton();
         titulo = new JLabel();
-        visual(frame,panel,parte1B); 
+        pane = this.getContentPane();
+        visual(); 
+        botones();
+    }
+    private void botones(){
+        ActionListener hunde = new hunde();
+        parte1B.addActionListener(hunde);
     }
     
-    
-    private void visual(JFrame frame, JPanel panel,JButton parte1B){
-        frame.setVisible(true);
-        frame.setBackground(Color.RED);
-        frame.setExtendedState(MAXIMIZED_BOTH);
-        frame.setResizable(false);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        xmax = frame.getWidth();
-        ymax = frame.getHeight();
-        frame.add(panel);
-        panel.setVisible(true);
-        panel.setBackground(Color.gray);
-        panel.setLayout(null);
-        panel.add(titulo);
-        
-        titulo.setVisible(true);
-        titulo.setText("Proyect Manager");
-        titulo.setFont(new Font("Arial",Font.BOLD,40));
-        
-        titulo.setBounds(630,5, 400, 200);
-        
-
-        panel.add(parte1B);
-        parte1B.setVisible(true);
-        parte1B.setBounds(300,500,100,50);
-        parte1B.setText("EDT");
-        
+    private void visual(){
+            pane.setLayout(null);
+            pane.setBackground(Color.getHSBColor(450, 345, 706));
+            titulo.setText("Proyect Management");
+            System.out.println(titulo.getSize());
+            titulo.setFont(new Font("Monospaced",Font.CENTER_BASELINE,60));
+            titulo.setSize(670, 300);
+            titulo.setForeground(Color.WHITE);
+            titulo.setLocation((xmax-670)/2, 20);
+            parte1B.setText("EDT");
+            parte1B.setSize(300,100);
+            parte1B.setLocation(((xmax-670)/2)-50,400);
+            parte1B.setBackground(Color.LIGHT_GRAY);
+            parte2B.setText("Cronograma");
+            parte2B.setSize(300,100);
+            parte2B.setLocation((xmax/2)+50,400);
+            pane.add(titulo);
+            pane.add(parte1B);
+            pane.add(parte2B);
     }
-
+        
+    public class hunde implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e){
+           pane.setVisible(false);
+        }
+    }
     
 }
