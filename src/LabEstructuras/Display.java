@@ -17,6 +17,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
@@ -27,107 +28,132 @@ import javax.swing.JTextField;
  *
  * @author tllach, nmartinez, dkaty
  */
-public class Display extends JFrame implements ItemListener{
+public class Display extends JFrame implements ItemListener, ActionListener{
     
-    JFrame frame;
     int xmax,ymax;
-    JPanel panel;
-    JButton parte1B,parte2B;
-    JButton AgregarEntre,AgregarPaquete;
-    JLabel titulo,titulo2,nombrepaquete;
-    Container pane;
+    Container container;
+    JButton btnEDT, btnCronograma, btnGuardar;
+    JLabel lblPrincipal, lblPEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion;
     JComboBox Selector;
     String opcion;
-    JTextField paquete;
+    JTextField txtSeleccion, txtPaquetePadre;
     
     public Display(int xmax,int ymax){
         this.xmax = xmax;
         this.ymax = ymax;
-        parte1B = new JButton();
-        parte2B = new JButton();
-        AgregarEntre = new JButton();
-        AgregarPaquete = new JButton();
-        titulo = new JLabel();
-        titulo2 = new JLabel();;
-        pane = this.getContentPane();
+        declaracion();
+        pantallaPrincipal(); 
+        addActionsListener();
+    }
+    
+    private void declaracion(){
+        container = this.getContentPane();
+        lblPrincipal = new JLabel();
+        btnEDT = new JButton();
+        btnCronograma = new JButton();
+        lblPEDT = new JLabel();
         Selector = new JComboBox();
-        paquete = new JTextField();
-        nombrepaquete = new JLabel();
-        visual(); 
-        botones();
+        txtSeleccion = new JTextField();
+        lblNombrePaquete = new JLabel();
+        lblSeleccionEDT = new JLabel();
+        lblUbicacion = new JLabel();
+        txtPaquetePadre = new JTextField();
+        btnGuardar = new JButton();
     }
     
-    private void botones(){
-        ActionListener hundeEDT = new hundeEDT();
-        parte1B.addActionListener(hundeEDT);
-    }
     
+    private void addActionsListener(){
+        btnEDT.addActionListener(this);
+        btnGuardar.addActionListener(this);
+        
+    }
     
     //Pantallas
-    private void visual(){
-            pane.setLayout(null);
-            pane.setBackground(Color.getHSBColor(450, 345, 706));
-            titulo.setText("Proyect Management");
-            System.out.println(titulo.getSize());
-            titulo.setFont(new Font("Monospaced",Font.CENTER_BASELINE,60));
-            titulo.setSize(670, 300);
-            titulo.setForeground(Color.WHITE);
-            titulo.setLocation((xmax-670)/2, 20);
-            parte1B.setText("EDT");
-            parte1B.setSize(300,100);
-            parte1B.setLocation(((xmax-670)/2)-50,400);
-            parte1B.setBackground(Color.LIGHT_GRAY);
-            parte2B.setText("Cronograma");
-            parte2B.setSize(300,100);
-            parte2B.setLocation((xmax/2)+50,400);
-            pane.add(titulo);
-            pane.add(parte1B);
-            pane.add(parte2B);
+    private void pantallaPrincipal(){
+            container.setLayout(null);
+            container.setBackground(Color.getHSBColor(450, 345, 706));
+            
+            lblPrincipal.setText("Proyect Management");
+            lblPrincipal.setFont(new Font("Monospaced",Font.CENTER_BASELINE,60));
+            lblPrincipal.setSize(670, 300);
+            lblPrincipal.setForeground(Color.WHITE);
+            lblPrincipal.setLocation((xmax-670)/2, 20);
+            
+            btnEDT.setText("EDT");
+            btnEDT.setSize(300,100);
+            btnEDT.setLocation(((xmax-670)/2)-50,400);
+            
+            btnCronograma.setText("Cronograma");
+            btnCronograma.setSize(300,100);
+            btnCronograma.setLocation((xmax/2)+50,400);
+            
+            addToContainer(lblPrincipal, btnEDT, btnCronograma);
     }
-    private void EDTVisual(){
-        titulo2.setText("EDT");
-        titulo2.setFont(new Font("Monospaced",Font.CENTER_BASELINE,60));
-        titulo2.setSize(670, 300);
-        titulo2.setForeground(Color.BLACK);
-        titulo2.setLocation(xmax-300, ymax-(ymax-2));
+    
+    private void pantallaEDT(){
+        container.setBackground(Color.getHSBColor(480, 345, 706));
+        
+        lblPEDT.setText("EDT");
+        lblPEDT.setFont(new Font("Monospaced",Font.CENTER_BASELINE,60));
+        lblPEDT.setSize(110, 60);
+        lblPEDT.setForeground(Color.BLACK);
+        lblPEDT.setLocation((xmax - lblPEDT.getWidth()) / 2  , 60);
+        
+        lblSeleccionEDT.setText("Seleccione:");
+        lblSeleccionEDT.setFont(new Font("Monospaced",Font.CENTER_BASELINE,40));
+        lblSeleccionEDT.setForeground(Color.WHITE);
+        lblSeleccionEDT.setBounds(lblPEDT.getX() - 15 , lblPEDT.getY() + 225, 350, 40);
+        
         Selector.setVisible(true);
+        Selector.addItem("-");
         Selector.addItem("Agregar Paquete");
         Selector.addItem("Agregar Entregable");
-        Selector.addItem("Visualizar Proyecto");
         Selector.addItemListener(this);
-        Selector.setBounds(30,40,500, 500);
+        Selector.setBounds(lblPEDT.getX() + 40, lblPEDT.getY() + 290, 400, 40);
         
-        pane.add(Selector);
-        pane.add(titulo2);
-        pane.validate();
-        pane.repaint();
+        addToContainer(Selector, lblPEDT, lblSeleccionEDT); 
+        container.validate();
+        container.repaint();
         
     }
 
     //Opciones
     private void AgregarPaquete(){
-        paquete.setBounds(xmax-500,200,100,150);
-        nombrepaquete.setText("Ingrese el nombre del paquete que desea agregar");
-        nombrepaquete.setFont(new Font("Monospaced",Font.CENTER_BASELINE,30));
-        nombrepaquete.setBounds(xmax-400,50,400,300);
-        pane.add(paquete);
-        pane.add(nombrepaquete);
+        lblUbicacion.setText("Ingrese Ubicacion:");
+        lblUbicacion.setFont(new Font("Monospaced", Font.CENTER_BASELINE, 35));
+        lblUbicacion.setForeground(Color.WHITE);
+        lblUbicacion.setBounds(lblSeleccionEDT.getX(), lblSeleccionEDT.getY() + 20, 600, 300);
+        
+        txtPaquetePadre.setBounds(Selector.getX(), lblUbicacion.getY() + 200, Selector.getWidth(), Selector.getHeight());
+        
+        lblNombrePaquete.setText("Ingrese Nombre Del Paquete:");
+        lblNombrePaquete.setFont(new Font("Monospaced", Font.CENTER_BASELINE, 35));
+        lblNombrePaquete.setForeground(Color.WHITE);
+        lblNombrePaquete.setBounds(lblUbicacion.getX(), txtPaquetePadre.getY() + 20, 600, 170);
+        
+        txtSeleccion.setBounds(txtPaquetePadre.getX(), lblNombrePaquete.getY() + 130, txtPaquetePadre.getWidth(), txtPaquetePadre.getHeight());
+        
+        btnGuardar.setText("Guardar");
+        btnGuardar.setBounds(txtSeleccion.getX() +20,txtSeleccion.getY() + 80, 100,100 );
+        
+        
+        addToContainer(txtSeleccion, lblUbicacion, txtPaquetePadre, lblNombrePaquete, btnGuardar);
     }
-    
-    //Action Listeners  
-    private class hundeEDT implements ActionListener{
-        @Override
-        public void actionPerformed(ActionEvent e){
-           pane.remove(titulo);
-           pane.remove(parte1B);
-           pane.remove(parte2B);
-           pane.validate();
-           pane.repaint();
-           pane.setBackground(Color.getHSBColor(570, 745, 300));
-           EDTVisual();
-        } 
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        if(ae.getSource() == btnEDT){
+            removeOfContainer(lblPrincipal, btnEDT, btnCronograma);
+            container.validate();
+            container.repaint();
+            pantallaEDT();
+        }
+        if(ae.getSource() == btnGuardar){
+            System.out.println("Guardado");
+        }
         
     }
+    
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getSource() == Selector){
@@ -136,13 +162,20 @@ public class Display extends JFrame implements ItemListener{
                 AgregarPaquete();
             }else if(opcion.equals("Agregar Entregable")){
                 
-            }else if (opcion.equals("Visualizar Proyecto")){
-                
             }
         }
     }
     
-   
+    private void addToContainer(JComponent ...objs) {
+        for(JComponent obj : objs) {
+            container.add(obj);
+        }
+    }   
     
+    private void removeOfContainer(JComponent ...objs) {
+        for(JComponent obj : objs) {
+            container.remove(obj);
+        }
+    } 
     
 }
