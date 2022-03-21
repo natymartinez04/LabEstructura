@@ -18,11 +18,13 @@ import java.awt.event.ItemListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
 
 /**
  *
@@ -30,13 +32,16 @@ import javax.swing.JTextField;
  */
 public class Display extends JFrame implements ItemListener, ActionListener{
     
-    int xmax,ymax;
+    int xmax,ymax,numpaquetes=1;
     Container container;
     JButton btnEDT, btnCronograma, btnGuardar;
     JLabel lblPrincipal, lblPEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion;
     JComboBox Selector;
     String opcion;
     JTextField txtSeleccion, txtPaquetePadre;
+    Arbol arbol;
+    JFileChooser archivoEntregable;
+    
     
     public Display(int xmax,int ymax){
         this.xmax = xmax;
@@ -47,6 +52,8 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     }
     
     private void declaracion(){
+        arbol = new Arbol();
+        arbol.raiz = new NodoArbol("EDT");
         container = this.getContentPane();
         lblPrincipal = new JLabel();
         btnEDT = new JButton();
@@ -59,6 +66,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         lblUbicacion = new JLabel();
         txtPaquetePadre = new JTextField();
         btnGuardar = new JButton();
+        archivoEntregable = new JFileChooser();
     }
     
     
@@ -134,10 +142,13 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         txtSeleccion.setBounds(txtPaquetePadre.getX(), lblNombrePaquete.getY() + 130, txtPaquetePadre.getWidth(), txtPaquetePadre.getHeight());
         
         btnGuardar.setText("Guardar");
-        btnGuardar.setBounds(txtSeleccion.getX() +20,txtSeleccion.getY() + 80, 100,100 );
+        btnGuardar.setForeground(Color.GREEN);
+        btnGuardar.setBounds(txtSeleccion.getX() +20,txtSeleccion.getY() + 70, 100 ,40 );
         
         
         addToContainer(txtSeleccion, lblUbicacion, txtPaquetePadre, lblNombrePaquete, btnGuardar);
+        validate();
+        repaint();
     }
 
     @Override
@@ -149,8 +160,10 @@ public class Display extends JFrame implements ItemListener, ActionListener{
             pantallaEDT();
         }
         if(ae.getSource() == btnGuardar){
-            System.out.println("Guardado");
+            arbol.raiz.hijos.insert(new NodoArbol(txtSeleccion.getText()));
+            arbol.imprimirArbol(arbol.raiz);
         }
+        
         
     }
     
@@ -161,6 +174,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
             if (opcion.equals("Agregar Paquete")){
                 AgregarPaquete();
             }else if(opcion.equals("Agregar Entregable")){
+                AgregarEntregable();
                 
             }
         }
@@ -177,5 +191,13 @@ public class Display extends JFrame implements ItemListener, ActionListener{
             container.remove(obj);
         }
     } 
+
+    private void AgregarEntregable() {
+        lblNombrePaquete.setText("Adjunte el Entregable:");
+        lblNombrePaquete.setBounds(lblUbicacion.getX(), txtPaquetePadre.getY() + 20, 700, 170);
+        archivoEntregable.setBounds(lblUbicacion.getX()+480, txtPaquetePadre.getY() + 60, 300, 200);
+        container.add(archivoEntregable);
+    }
     
 }
+
