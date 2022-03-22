@@ -11,7 +11,7 @@ package LabEstructuras;
  */
 public class Arbol {
     NodoArbol raiz;
-    
+    int conta;
     public Arbol(){
         this.raiz = null;
     }
@@ -26,4 +26,26 @@ public class Arbol {
             p = p.link;
         }
     }
+    
+    
+    public Boolean Existe(NodoArbol raiz,int n,String dato){
+        Boolean encontrado=false;
+        if (raiz.dato.equals(dato)){
+            encontrado = true;
+        }else{
+            NodoLista p = raiz.hijos.ptr;
+            for (int i = 0; i<n;i++){
+                if (dato.equals(p.nodoArbol.dato)){
+                    encontrado = true;
+                }
+            p = p.link;
+        }
+        System.out.println(encontrado);
+        
+        }
+        return encontrado;
+    }
 }
+
+    
+
