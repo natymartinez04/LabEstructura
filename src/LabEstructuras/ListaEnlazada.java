@@ -15,7 +15,7 @@ public class ListaEnlazada {
     
     NodoLista ptr;
     NodoLista link;
-    int tam;
+    int tam = 0;
     
     public ListaEnlazada() {
         this.ptr = null;
@@ -30,43 +30,39 @@ public class ListaEnlazada {
                 p = p.link;
             }
             p.link = new NodoLista(n);
+            
+        } 
+    }
+
+    public void printHijos(NodoArbol n){
+        System.out.println("Padre"+n.dato);
+        if (ptr == null){
+            System.out.println("No tiene hijos");
+        }else{
+            NodoLista p = ptr;
+            while (p != null){
+                System.out.println(p.nodoArbol.dato);
+                p = p.link;
+            }
         } 
     }
     
-    public NodoArbol BuscaPaquetePadre(NodoArbol raiz,String datoPadre,String datoHijo){
-        Boolean encontroPadre = false;
-        if (raiz != null){
-            if (raiz.dato.equals(datoPadre)){
-                return raiz;
-            }else{
-                if (raiz.hijos.ptr != null){
-                    NodoLista Hijo = raiz.hijos.ptr;
-                    encontroPadre = revisaHijos(raiz,datoPadre,Hijo);
-                    Hijo = Hijo.link;
-                    if (encontroPadre == false && Hijo.link != null){
-                        Hijo = Hijo.link;
-                        BuscaPaquetePadre(Hijo.nodoArbol,datoPadre,datoHijo);
-                    }else if (encontroPadre==true){
-                        Hijo.nodoArbol.hijos.insert(new NodoArbol(datoHijo));
-                    }
-                }  
-            }    
-        }
-        return raiz;
-    }
-    
-    public Boolean revisaHijos(NodoArbol p,String dato,NodoLista hijo){
-        boolean encontroPadre = false;
-        if (p.hijos.ptr != null){
-            if (dato.equals(hijo.nodoArbol.dato)){
-                encontroPadre = true;
-                return encontroPadre;
-            }else{
-                hijo = hijo.link;
-                revisaHijos(p,dato,hijo);
+    public void InsertaEnPadreCorrecto(NodoArbol raiz,String datoPadre,String datoHijo){
+        NodoLista a = raiz.hijos.ptr;
+        if (raiz.dato.equals(datoPadre)){
+            System.out.println("El padre es: "+raiz.dato);
+            raiz.hijos.insert(new NodoArbol(datoHijo));
+        }else{
+            while (a != null){
+                if (a.nodoArbol.dato.equals(datoPadre)){
+                    System.out.println("El padre es: "+a.nodoArbol.dato);
+                    a.nodoArbol.hijos.insert(new NodoArbol(datoHijo));
+                }else{
+                    InsertaEnPadreCorrecto(a.nodoArbol,datoPadre,datoHijo);
+                }
+                a = a.link;
             }
         }
-        return encontroPadre;
+        }
     }
 
-}
