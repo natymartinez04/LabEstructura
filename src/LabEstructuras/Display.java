@@ -10,22 +10,17 @@ package LabEstructuras;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import static javax.swing.JFrame.EXIT_ON_CLOSE;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 /**
@@ -34,19 +29,20 @@ import javax.swing.JTextField;
  */
 public class Display extends JFrame implements ItemListener, ActionListener{
     
+    String opcion, paquetePadre, nombreArchivo;
     int xmax, ymax, numpaquetes, verificaerrores;
+    Boolean inEntregable, inPaquete, isFileAdded;
     Container container;
-    JButton btnEDT, btnCronograma, btnGuardar;
-    JLabel lblPrincipal, lblPEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion;
+    JButton btnEDT, btnCronograma, btnGuardar, btnGuardarArchivo, btnEntregable, btnFileChooser, btnGuardarEntregable;
+    JLabel lblPrincipal, lblPEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion, lblEscriba;
     JComboBox selectorOption, selectorPaquete;
-    String opcion, paquetePadre;
     JTextField txtNombrePaqueteNuevo;
+    JTextArea txtArea;
     Arbol arbol;
     JFileChooser archivoEntregable;
     ArrayList<String> options;
 
-    
-    public Display(int xmax,int ymax){
+    public Display(int xmax, int ymax){
         this.xmax = xmax;
         this.ymax = ymax;
         declaracion();
@@ -74,6 +70,16 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         options.add("-");
         options.add("EDT");
         selectorPaquete = new JComboBox();
+        btnEntregable = new JButton();
+        btnFileChooser = new JButton();
+        btnGuardarEntregable = new JButton();
+        nombreArchivo = "null";
+        inEntregable = false;
+        inPaquete = false;
+        isFileAdded = false;
+        lblEscriba = new JLabel();
+        txtArea = new JTextArea();
+        btnGuardarArchivo = new JButton();
     }
     
     private void addActionsListener(){
@@ -81,6 +87,10 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         btnGuardar.addActionListener(this);  
         selectorOption.addItemListener(this);
         selectorPaquete.addItemListener(this);
+        btnFileChooser.addActionListener(this);
+        btnEntregable.addActionListener(this);
+        btnGuardarArchivo.addActionListener(this);
+        btnGuardarEntregable.addActionListener(this);
     }
     
     //Pantallas
@@ -128,11 +138,15 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         addToContainer(selectorOption, lblPEDT, lblSeleccionEDT); 
         container.validate();
         container.repaint();
-        
     }
 
     //Opciones
     private void GUIAgregarPaquete(){
+        inPaquete = true;
+        inEntregable = false;
+        btnEntregable.setVisible(false);
+        btnGuardarEntregable.setVisible(false);
+        
         lblUbicacion.setText("Seleccione Ubicacion:");
         lblUbicacion.setFont(new Font("Monospaced", Font.CENTER_BASELINE, 35));
         lblUbicacion.setForeground(Color.WHITE);
@@ -149,12 +163,15 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         lblNombrePaquete.setForeground(Color.WHITE);
         lblNombrePaquete.setBounds(lblUbicacion.getX(), selectorPaquete.getY() + 20, 600, 170);
         
+        txtNombrePaqueteNuevo.setVisible(true);
         txtNombrePaqueteNuevo.setBounds(selectorPaquete.getX(), lblNombrePaquete.getY() + 130, selectorPaquete.getWidth(), selectorPaquete.getHeight());
         
+        btnGuardar.setVisible(true);
         btnGuardar.setText("Guardar");
         btnGuardar.setForeground(Color.GREEN);
         btnGuardar.setBounds(txtNombrePaqueteNuevo.getX() + 20,txtNombrePaqueteNuevo.getY() + 70, 100 ,40 );
         
+        btnFileChooser.setVisible(false);
         
         addToContainer(txtNombrePaqueteNuevo, lblUbicacion, selectorPaquete, lblNombrePaquete, btnGuardar);
         validate();
@@ -162,6 +179,11 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     }
 
     private void GUIAgregarEntregable() {
+        inPaquete = false;
+        inEntregable = true;
+        btnGuardar.setVisible(false);
+        txtNombrePaqueteNuevo.setVisible(false);
+        
         lblUbicacion.setText("Seleccione Ubicacion:");
         lblUbicacion.setFont(new Font("Monospaced", Font.CENTER_BASELINE, 35));
         lblUbicacion.setForeground(Color.WHITE);
@@ -177,15 +199,23 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         lblNombrePaquete.setFont(new Font("Monospaced", Font.CENTER_BASELINE, 35));
         lblNombrePaquete.setForeground(Color.WHITE);
         lblNombrePaquete.setBounds(lblUbicacion.getX(), selectorPaquete.getY() + 20, 600, 170);
+        /**
+        btnEntregable.setVisible(true);
+        btnEntregable.setText("Crear Entregable");
+        btnEntregable.setForeground(Color.RED);
+        btnEntregable.setBounds(selectorPaquete.getX(), lblNombrePaquete.getY() + 130, selectorPaquete.getWidth(), selectorPaquete.getHeight());
+        **/
+        btnFileChooser.setVisible(true);
+        btnFileChooser.setText("Importar Entregable");
+        btnFileChooser.setForeground(Color.RED);
+        btnFileChooser.setBounds(selectorPaquete.getX(), lblNombrePaquete.getY() + 130, selectorPaquete.getWidth(), selectorPaquete.getHeight());
         
-        txtNombrePaqueteNuevo.setBounds(selectorPaquete.getX(), lblNombrePaquete.getY() + 130, selectorPaquete.getWidth(), selectorPaquete.getHeight());
+        btnGuardarEntregable.setVisible(true);        
+        btnGuardarEntregable.setText("Guardar");
+        btnGuardarEntregable.setForeground(Color.ORANGE);
+        btnGuardarEntregable.setBounds(selectorPaquete.getX() + 110, btnFileChooser.getY() + 90, 180 ,40 );
         
-        btnGuardar.setText("Guardar");
-        btnGuardar.setForeground(Color.GREEN);
-        btnGuardar.setBounds(txtNombrePaqueteNuevo.getX() + 20,txtNombrePaqueteNuevo.getY() + 70, 100 ,40 );
-        
-        
-        addToContainer(txtNombrePaqueteNuevo, lblUbicacion, selectorPaquete, lblNombrePaquete, btnGuardar);
+        addToContainer(btnGuardarEntregable, btnFileChooser, lblUbicacion, selectorPaquete, lblNombrePaquete);
         validate();
         repaint();
     }
@@ -198,45 +228,124 @@ public class Display extends JFrame implements ItemListener, ActionListener{
             container.repaint();
             pantallaEDT();
         }
+        
         if(ae.getSource() == btnGuardar){
-            verificaerrores = 0;
-            Boolean seRepite = false;
-            seRepite = arbol.Existe(arbol.raiz, txtNombrePaqueteNuevo.getText());
-            if (seRepite == true){
+            //check si el paquete ya existe en el arbol
+            if (arbol.Existe(arbol.raiz, txtNombrePaqueteNuevo.getText())){
                 JOptionPane.showMessageDialog(null, "Este paquete ya existe");
-                verificaerrores ++;
-            }
-            verificarInput();
-            if (verificaerrores == 0){
-                AgregarAlArbolPaquete();
+            }else{
+                if(!verificarBadInput()){
+                    agregarAlArbolPaquete();
+                    txtNombrePaqueteNuevo.setText("");
+                }
             }
         } 
+        
+        if(ae.getSource() == btnFileChooser){
+            try{
+                JFileChooser file = new JFileChooser();
+                file.setAcceptAllFileFilterUsed(false);
+                file.setDialogTitle("Select a .txt file");
+                FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .txt files", "txt");
+                file.addChoosableFileFilter(restrict);
+                file.showOpenDialog(this);
+                File fileChoose = file.getSelectedFile();
+                nombreArchivo = fileChoose.getName();
+                System.out.println(nombreArchivo);
+                isFileAdded = true;  
+            }catch(Exception ex){
+                
+            }
+        }
+        
+        if(ae.getSource() == btnEntregable){
+            escribirArchivo();
+        }
+        
+        if(ae.getSource() == btnGuardarEntregable){
+            if (arbol.Existe(arbol.raiz, nombreArchivo)){
+                JOptionPane.showMessageDialog(null, "Ya existe un entregable con ese nombre");
+            }else{
+                if(!verificarBadInput()){
+                    agregarAlArbolEntregable();
+                }
+            }
+        }    
     }
     
-    private void verificarInput(){
-        if (txtNombrePaqueteNuevo.getText().isEmpty()){
-            JOptionPane.showMessageDialog(null, "Por favor ingrese el nombre del paquete que desee agregar");
-            verificaerrores++;
+    private boolean verificarBadInput(){
+        if(inPaquete){
+            if (txtNombrePaqueteNuevo.getText().isEmpty()){
+                JOptionPane.showMessageDialog(null, "Por favor ingrese el nombre del paquete que desee agregar");
+                verificaerrores++;
+                return true;
+            }
+            if ("-".equals(paquetePadre)){
+                JOptionPane.showMessageDialog(null, "Por favor seleccione el paquete padre");
+                verificaerrores++;
+                return true;
+            }      
+        }else if (inEntregable){
+            if ("-".equals(paquetePadre)){
+                JOptionPane.showMessageDialog(null, "Por favor seleccione el paquete del entregable");
+                verificaerrores++;
+                return true;
+            }
+            if("null".equals(nombreArchivo)){
+                JOptionPane.showMessageDialog(null, "Por favor seleccione un entregable");
+            }
         }
-        if ("-".equals(paquetePadre)){
-            JOptionPane.showMessageDialog(null, "Por favor seleccione el paquete padre");
-            verificaerrores++;
+        return false;
+    }    
+        
+    private void agregarAlArbolPaquete(){
+        options.add(paquetePadre + "~>" + txtNombrePaqueteNuevo.getText());
+        if (paquetePadre.length()>5){
+                int i;
+                i = paquetePadre.lastIndexOf(">");
+                paquetePadre = paquetePadre.substring(i+1, paquetePadre.length());
         }
-    }
-    
-    private void AgregarAlArbolPaquete(){
         arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, txtNombrePaqueteNuevo.getText());
         numpaquetes++;
-        options.add(paquetePadre + "~>" + txtNombrePaqueteNuevo.getText());
         selectorPaquete.removeAllItems();
         for(String op: options){
             selectorPaquete.addItem(op);
         }
         validate();
         repaint();
-        //selectorPaquete.addItem(paquetePadre + "~>" + txtNombrePaqueteNuevo.getText());
     }
 
+    private void agregarAlArbolEntregable(){
+        if (paquetePadre.length()>5){
+                int i;
+                i = paquetePadre.lastIndexOf(">");
+                paquetePadre = paquetePadre.substring(i+1, paquetePadre.length());
+        }
+        arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, nombreArchivo);
+    }
+    
+    private void escribirArchivo(){
+        container.setBackground(Color.getHSBColor(480, 345, 706));
+        
+        lblEscriba.setText("Escriba los datos a ingresar en su archivo");
+        lblEscriba.setFont(new Font("Monospaced",Font.CENTER_BASELINE,60));
+        lblEscriba.setSize(110, 40);
+        lblEscriba.setForeground(Color.BLACK);
+        lblEscriba.setLocation((xmax - lblEscriba.getWidth()) / 2  , 60);
+        
+        txtArea.setSize(500,100);
+        txtArea.setLocation((xmax/2)+50,400);
+        
+        btnGuardarArchivo.setText("Guardar Archivo");
+        btnGuardarArchivo.setSize(70,40);
+        btnGuardarArchivo.setLocation((xmax/2)+80,300);
+        
+        addToContainer(lblEscriba, txtArea, btnGuardarArchivo);
+        container.validate();
+        container.repaint();
+    }
+
+    
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getSource() == selectorOption){
@@ -245,7 +354,6 @@ public class Display extends JFrame implements ItemListener, ActionListener{
             if (opcion.equals("Agregar Paquete")){ 
                 GUIAgregarPaquete();
             }else if(opcion.equals("Agregar Entregable")){
-                //arbol.raiz.hijos.printHijos(arbol.raiz);
                 GUIAgregarEntregable(); 
             }
         }
