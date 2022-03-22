@@ -34,7 +34,7 @@ public class ListaEnlazada {
         } 
     }
 
-    public void printHijos(NodoArbol n){
+    /**public void printHijos(NodoArbol n){
         System.out.println("Padre"+n.dato);
         if (ptr == null){
             System.out.println("No tiene hijos");
@@ -45,20 +45,20 @@ public class ListaEnlazada {
                 p = p.link;
             }
         } 
-    }
+    }**/
     
-    public void InsertaEnPadreCorrecto(NodoArbol raiz,String datoPadre,String datoHijo){
+    public void InsertaEnPadreCorrecto(NodoArbol raiz, String datoPadre, String datoHijo){
         NodoLista a = raiz.hijos.ptr;
         if (raiz.dato.equals(datoPadre)){
-            System.out.println("El padre es: "+raiz.dato);
+            System.out.println("El padre es: " + raiz.dato);
             raiz.hijos.insert(new NodoArbol(datoHijo));
         }else{
             while (a != null){
                 if (a.nodoArbol.dato.equals(datoPadre)){
-                    System.out.println("El padre es: "+a.nodoArbol.dato);
+                    System.out.println("El padre es: " + a.nodoArbol.dato);
                     a.nodoArbol.hijos.insert(new NodoArbol(datoHijo));
                 }else{
-                    InsertaEnPadreCorrecto(a.nodoArbol,datoPadre,datoHijo);
+                    InsertaEnPadreCorrecto(a.nodoArbol, datoPadre, datoHijo);
                 }
                 a = a.link;
             }

@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -33,15 +34,16 @@ import javax.swing.JTextField;
  */
 public class Display extends JFrame implements ItemListener, ActionListener{
     
-    int xmax,ymax,numpaquetes=0,verificaerrores;
+    int xmax, ymax, numpaquetes, verificaerrores;
     Container container;
     JButton btnEDT, btnCronograma, btnGuardar;
     JLabel lblPrincipal, lblPEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion;
-    JComboBox Selector;
-    String opcion;
-    JTextField txtSeleccion, txtPaquetePadre;
+    JComboBox selectorOption, selectorPaquete;
+    String opcion, paquetePadre;
+    JTextField txtNombrePaqueteNuevo;
     Arbol arbol;
     JFileChooser archivoEntregable;
+    ArrayList<String> options;
 
     
     public Display(int xmax,int ymax){
@@ -60,22 +62,25 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         btnEDT = new JButton();
         btnCronograma = new JButton();
         lblPEDT = new JLabel();
-        Selector = new JComboBox();
-        txtSeleccion = new JTextField();
+        selectorOption = new JComboBox();
+        txtNombrePaqueteNuevo = new JTextField();
         lblNombrePaquete = new JLabel();
         lblSeleccionEDT = new JLabel();
         lblUbicacion = new JLabel();
-        txtPaquetePadre = new JTextField();
         btnGuardar = new JButton();
         archivoEntregable = new JFileChooser();
+        numpaquetes = 0;
+        options = new ArrayList<String>();
+        options.add("-");
+        options.add("EDT");
+        selectorPaquete = new JComboBox();
     }
-    
     
     private void addActionsListener(){
         btnEDT.addActionListener(this);
-        btnGuardar.addActionListener(this);
-
-        
+        btnGuardar.addActionListener(this);  
+        selectorOption.addItemListener(this);
+        selectorPaquete.addItemListener(this);
     }
     
     //Pantallas
@@ -114,45 +119,77 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         lblSeleccionEDT.setForeground(Color.WHITE);
         lblSeleccionEDT.setBounds(lblPEDT.getX() - 15 , lblPEDT.getY() + 225, 350, 40);
         
-        Selector.setVisible(true);
-        Selector.addItem("-");
-        Selector.addItem("Agregar Paquete");
-        Selector.addItem("Agregar Entregable");
-        Selector.addItemListener(this);
-        Selector.setBounds(lblPEDT.getX() + 40, lblPEDT.getY() + 290, 400, 40);
+        selectorOption.setVisible(true);
+        selectorOption.addItem("-");
+        selectorOption.addItem("Agregar Paquete");
+        selectorOption.addItem("Agregar Entregable");
+        selectorOption.setBounds(lblPEDT.getX() + 40, lblPEDT.getY() + 290, 400, 40);
         
-        addToContainer(Selector, lblPEDT, lblSeleccionEDT); 
+        addToContainer(selectorOption, lblPEDT, lblSeleccionEDT); 
         container.validate();
         container.repaint();
         
     }
 
     //Opciones
-    private void AgregarPaquete(){
-        lblUbicacion.setText("Ingrese Ubicacion:");
+    private void GUIAgregarPaquete(){
+        lblUbicacion.setText("Seleccione Ubicacion:");
         lblUbicacion.setFont(new Font("Monospaced", Font.CENTER_BASELINE, 35));
         lblUbicacion.setForeground(Color.WHITE);
         lblUbicacion.setBounds(lblSeleccionEDT.getX(), lblSeleccionEDT.getY() + 20, 600, 300);
         
-        txtPaquetePadre.setBounds(Selector.getX(), lblUbicacion.getY() + 200, Selector.getWidth(), Selector.getHeight());
+        selectorPaquete.setVisible(true);
+        for(String op: options){
+            selectorPaquete.addItem(op);
+        }
+        selectorPaquete.setBounds(selectorOption.getX(), lblUbicacion.getY() + 200, selectorOption.getWidth(), selectorOption.getHeight());
         
         lblNombrePaquete.setText("Ingrese Nombre Del Paquete:");
         lblNombrePaquete.setFont(new Font("Monospaced", Font.CENTER_BASELINE, 35));
         lblNombrePaquete.setForeground(Color.WHITE);
-        lblNombrePaquete.setBounds(lblUbicacion.getX(), txtPaquetePadre.getY() + 20, 600, 170);
+        lblNombrePaquete.setBounds(lblUbicacion.getX(), selectorPaquete.getY() + 20, 600, 170);
         
-        txtSeleccion.setBounds(txtPaquetePadre.getX(), lblNombrePaquete.getY() + 130, txtPaquetePadre.getWidth(), txtPaquetePadre.getHeight());
+        txtNombrePaqueteNuevo.setBounds(selectorPaquete.getX(), lblNombrePaquete.getY() + 130, selectorPaquete.getWidth(), selectorPaquete.getHeight());
         
         btnGuardar.setText("Guardar");
         btnGuardar.setForeground(Color.GREEN);
-        btnGuardar.setBounds(txtSeleccion.getX() +20,txtSeleccion.getY() + 70, 100 ,40 );
+        btnGuardar.setBounds(txtNombrePaqueteNuevo.getX() + 20,txtNombrePaqueteNuevo.getY() + 70, 100 ,40 );
         
         
-        addToContainer(txtSeleccion, lblUbicacion, txtPaquetePadre, lblNombrePaquete, btnGuardar);
+        addToContainer(txtNombrePaqueteNuevo, lblUbicacion, selectorPaquete, lblNombrePaquete, btnGuardar);
         validate();
         repaint();
     }
 
+    private void GUIAgregarEntregable() {
+        lblUbicacion.setText("Seleccione Ubicacion:");
+        lblUbicacion.setFont(new Font("Monospaced", Font.CENTER_BASELINE, 35));
+        lblUbicacion.setForeground(Color.WHITE);
+        lblUbicacion.setBounds(lblSeleccionEDT.getX(), lblSeleccionEDT.getY() + 20, 600, 300);
+        
+        selectorPaquete.setVisible(true);
+        for(String op: options){
+            selectorPaquete.addItem(op);
+        }
+        selectorPaquete.setBounds(selectorOption.getX(), lblUbicacion.getY() + 200, selectorOption.getWidth(), selectorOption.getHeight());
+        
+        lblNombrePaquete.setText("Adjunte Entregable");
+        lblNombrePaquete.setFont(new Font("Monospaced", Font.CENTER_BASELINE, 35));
+        lblNombrePaquete.setForeground(Color.WHITE);
+        lblNombrePaquete.setBounds(lblUbicacion.getX(), selectorPaquete.getY() + 20, 600, 170);
+        
+        txtNombrePaqueteNuevo.setBounds(selectorPaquete.getX(), lblNombrePaquete.getY() + 130, selectorPaquete.getWidth(), selectorPaquete.getHeight());
+        
+        btnGuardar.setText("Guardar");
+        btnGuardar.setForeground(Color.GREEN);
+        btnGuardar.setBounds(txtNombrePaqueteNuevo.getX() + 20,txtNombrePaqueteNuevo.getY() + 70, 100 ,40 );
+        
+        
+        addToContainer(txtNombrePaqueteNuevo, lblUbicacion, selectorPaquete, lblNombrePaquete, btnGuardar);
+        validate();
+        repaint();
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         if(ae.getSource() == btnEDT){
@@ -164,53 +201,56 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         if(ae.getSource() == btnGuardar){
             verificaerrores = 0;
             Boolean seRepite = false;
-            seRepite = arbol.Existe(arbol.raiz, txtSeleccion.getText());
+            seRepite = arbol.Existe(arbol.raiz, txtNombrePaqueteNuevo.getText());
             if (seRepite == true){
                 JOptionPane.showMessageDialog(null, "Este paquete ya existe");
                 verificaerrores ++;
             }
-            TodosLosDatosEDT();
-         
+            verificarInput();
             if (verificaerrores == 0){
                 AgregarAlArbolPaquete();
             }
         } 
- 
-        
     }
-    private void TodosLosDatosEDT(){
-        Boolean NoVacio=false;
-            if (txtSeleccion.getText().isEmpty()){
-                JOptionPane.showMessageDialog(null,"Por favor ingrese el nombre del paquete que desee agregar");
-                NoVacio = true;
-                verificaerrores++;
-            }
-            if (txtPaquetePadre.getText().isEmpty()){
-                JOptionPane.showMessageDialog(null,"Por favor ingrese el paquete padre");
-                NoVacio = true;
-                verificaerrores++;
-            }
-
+    
+    private void verificarInput(){
+        if (txtNombrePaqueteNuevo.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Por favor ingrese el nombre del paquete que desee agregar");
+            verificaerrores++;
+        }
+        if ("-".equals(paquetePadre)){
+            JOptionPane.showMessageDialog(null, "Por favor seleccione el paquete padre");
+            verificaerrores++;
+        }
     }
     
     private void AgregarAlArbolPaquete(){
-        arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz,txtPaquetePadre.getText(),txtSeleccion.getText());
+        arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, txtNombrePaqueteNuevo.getText());
         numpaquetes++;
+        options.add(paquetePadre + "~>" + txtNombrePaqueteNuevo.getText());
+        selectorPaquete.removeAllItems();
+        for(String op: options){
+            selectorPaquete.addItem(op);
+        }
+        validate();
+        repaint();
+        //selectorPaquete.addItem(paquetePadre + "~>" + txtNombrePaqueteNuevo.getText());
     }
-    
 
-   
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if (e.getSource() == Selector){
-            opcion = (String) Selector.getSelectedItem();
-            if (opcion.equals("Agregar Paquete")){
-                AgregarPaquete();
+        if (e.getSource() == selectorOption){
+            opcion = (String) selectorOption.getSelectedItem();
+            selectorPaquete.removeAllItems();
+            if (opcion.equals("Agregar Paquete")){ 
+                GUIAgregarPaquete();
             }else if(opcion.equals("Agregar Entregable")){
-                arbol.raiz.hijos.printHijos(arbol.raiz);
-                AgregarEntregable();
-                
+                //arbol.raiz.hijos.printHijos(arbol.raiz);
+                GUIAgregarEntregable(); 
             }
+        }
+        if(e.getSource() == selectorPaquete){
+            paquetePadre = (String) selectorPaquete.getSelectedItem();
         }
     }
     
@@ -226,9 +266,4 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         }
     } 
 
-    private void AgregarEntregable() {
-        
-    }
-    
 }
-

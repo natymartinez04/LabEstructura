@@ -12,9 +12,11 @@ package LabEstructuras;
 public class Arbol {
     NodoArbol raiz;
     int conta;
+    
     public Arbol(){
         this.raiz = null;
     }
+    
     public void imprimirArbol(NodoArbol raiz,int n,int conta){
         if (raiz != null){
             
@@ -22,6 +24,7 @@ public class Arbol {
         }
         
     }
+    
     public Boolean Existe(NodoArbol raiz, String dato){
         Boolean encontrado = false;
         if (raiz.dato.equals(dato)){
@@ -35,7 +38,6 @@ public class Arbol {
                 Existe(p.nodoArbol, dato);
                 p = p.link;
             }
-            System.out.println(encontrado);
         }
         return encontrado;
     }
