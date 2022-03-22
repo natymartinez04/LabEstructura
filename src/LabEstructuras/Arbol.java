@@ -15,37 +15,29 @@ public class Arbol {
     public Arbol(){
         this.raiz = null;
     }
-    public void imprimirArbol(NodoArbol raiz){
-        NodoLista p = raiz.hijos.ptr;
-        String raizstring = (String)raiz.dato;
-        String nombre;
-        System.out.println(raizstring);
-        for (int i = 0; i<=3;i++){
-            nombre = (String) p.nodoArbol.dato; 
-            System.out.println(nombre);
-            p = p.link;
+    public void imprimirArbol(NodoArbol raiz,int n,int conta){
+        if (raiz != null){
+            
+            
         }
+        
     }
-    
-    
-    public Boolean Existe(NodoArbol raiz,int n,String dato){
-        Boolean encontrado=false;
+    public Boolean Existe(NodoArbol raiz, String dato){
+        Boolean encontrado = false;
         if (raiz.dato.equals(dato)){
             encontrado = true;
         }else{
             NodoLista p = raiz.hijos.ptr;
-            for (int i = 0; i<n;i++){
+            while(p != null){
                 if (dato.equals(p.nodoArbol.dato)){
                     encontrado = true;
                 }
-            p = p.link;
-        }
-        System.out.println(encontrado);
-        
+                Existe(p.nodoArbol, dato);
+                p = p.link;
+            }
+            System.out.println(encontrado);
         }
         return encontrado;
     }
-}
-
-    
+   }
 
