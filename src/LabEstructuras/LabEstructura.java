@@ -13,7 +13,7 @@ import static javax.swing.JFrame.EXIT_ON_CLOSE;
  *
  * @author tllach, nmartinez, dkaty
  */
-public class LabEstrcuctura {
+public class LabEstructura {
 
     /**
      * @param args the command line arguments
