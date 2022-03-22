@@ -22,6 +22,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -32,7 +33,7 @@ import javax.swing.JTextField;
  */
 public class Display extends JFrame implements ItemListener, ActionListener{
     
-    int xmax,ymax,numpaquetes=1;
+    int xmax,ymax,numpaquetes=0,verificaerrores;
     Container container;
     JButton btnEDT, btnCronograma, btnGuardar;
     JLabel lblPrincipal, lblPEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion;
@@ -41,7 +42,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     JTextField txtSeleccion, txtPaquetePadre;
     Arbol arbol;
     JFileChooser archivoEntregable;
-    
+
     
     public Display(int xmax,int ymax){
         this.xmax = xmax;
@@ -73,6 +74,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     private void addActionsListener(){
         btnEDT.addActionListener(this);
         btnGuardar.addActionListener(this);
+
         
     }
     
@@ -160,13 +162,66 @@ public class Display extends JFrame implements ItemListener, ActionListener{
             pantallaEDT();
         }
         if(ae.getSource() == btnGuardar){
-            arbol.raiz.hijos.insert(new NodoArbol(txtSeleccion.getText()));
-            arbol.imprimirArbol(arbol.raiz);
+            verificaerrores = 0;
+            TodosLosDatosEDT();
+            PaqueteArbolExiste();
+            NoRepite();
+            if (verificaerrores == 0){
+                AgregarAlArbolPaquete();
+            }
+        } 
+ 
+        
+    }
+    private void TodosLosDatosEDT(){
+        Boolean NoVacio=false;
+            if (txtSeleccion.getText().isEmpty()){
+                JOptionPane.showMessageDialog(null,"Por favor ingrese el nombre del paquete que desee agregar");
+                NoVacio = true;
+                verificaerrores++;
+            }
+            if (txtPaquetePadre.getText().isEmpty()){
+                JOptionPane.showMessageDialog(null,"Por favor ingrese el paquete padre");
+                NoVacio = true;
+                verificaerrores++;
+            }
+
+    }
+    private void AgregarAlArbolPaquete(){
+        NodoArbol padre;
+        padre = arbol.raiz.hijos.BuscaPaquetePadre(arbol.raiz,txtPaquetePadre.getText(),txtSeleccion.getText());
+        if (padre != null){
+            numpaquetes++;
+            padre.hijos.insert(new NodoArbol(txtSeleccion.getText()));
+            JOptionPane.showMessageDialog(null,"Guardado exitosamente");
+            
         }
         
         
+        //numpaquetes++;
+        //arbol.raiz.hijos.insert(new NodoArbol(txtSeleccion.getText()));
+        //arbol.imprimirArbol(arbol.raiz,numpaquetes);
     }
     
+    private void PaqueteArbolExiste(){
+  
+            Boolean existe = arbol.Existe(arbol.raiz, numpaquetes, txtPaquetePadre.getText());
+            if (existe == false){
+                JOptionPane.showMessageDialog(null,"El paquete padre ingresado no existe");
+                verificaerrores++;
+            }
+
+    }
+    private void NoRepite(){
+
+            Boolean existe = arbol.Existe(arbol.raiz, numpaquetes, txtSeleccion.getText());
+            if (existe == true){
+                JOptionPane.showMessageDialog(null,"Este paquete ya existe, por favor ingrese otro nombre");
+                verificaerrores++;
+            }
+
+    }
+   
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getSource() == Selector){
@@ -193,10 +248,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     } 
 
     private void AgregarEntregable() {
-        lblNombrePaquete.setText("Adjunte el Entregable:");
-        lblNombrePaquete.setBounds(lblUbicacion.getX(), txtPaquetePadre.getY() + 20, 700, 170);
-        archivoEntregable.setBounds(lblUbicacion.getX()+480, txtPaquetePadre.getY() + 60, 300, 200);
-        container.add(archivoEntregable);
+        
     }
     
 }
