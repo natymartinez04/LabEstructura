@@ -163,9 +163,14 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         }
         if(ae.getSource() == btnGuardar){
             verificaerrores = 0;
+            Boolean seRepite = false;
+            seRepite = arbol.Existe(arbol.raiz, txtSeleccion.getText());
+            if (seRepite == true){
+                JOptionPane.showMessageDialog(null, "Este paquete ya existe");
+                verificaerrores ++;
+            }
             TodosLosDatosEDT();
-            PaqueteArbolExiste();
-            NoRepite();
+         
             if (verificaerrores == 0){
                 AgregarAlArbolPaquete();
             }
@@ -187,40 +192,13 @@ public class Display extends JFrame implements ItemListener, ActionListener{
             }
 
     }
+    
     private void AgregarAlArbolPaquete(){
-        NodoArbol padre;
-        padre = arbol.raiz.hijos.BuscaPaquetePadre(arbol.raiz,txtPaquetePadre.getText(),txtSeleccion.getText());
-        if (padre != null){
-            numpaquetes++;
-            padre.hijos.insert(new NodoArbol(txtSeleccion.getText()));
-            JOptionPane.showMessageDialog(null,"Guardado exitosamente");
-            
-        }
-        
-        
-        //numpaquetes++;
-        //arbol.raiz.hijos.insert(new NodoArbol(txtSeleccion.getText()));
-        //arbol.imprimirArbol(arbol.raiz,numpaquetes);
+        arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz,txtPaquetePadre.getText(),txtSeleccion.getText());
+        numpaquetes++;
     }
     
-    private void PaqueteArbolExiste(){
-  
-            Boolean existe = arbol.Existe(arbol.raiz, numpaquetes, txtPaquetePadre.getText());
-            if (existe == false){
-                JOptionPane.showMessageDialog(null,"El paquete padre ingresado no existe");
-                verificaerrores++;
-            }
 
-    }
-    private void NoRepite(){
-
-            Boolean existe = arbol.Existe(arbol.raiz, numpaquetes, txtSeleccion.getText());
-            if (existe == true){
-                JOptionPane.showMessageDialog(null,"Este paquete ya existe, por favor ingrese otro nombre");
-                verificaerrores++;
-            }
-
-    }
    
     @Override
     public void itemStateChanged(ItemEvent e) {
@@ -229,6 +207,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
             if (opcion.equals("Agregar Paquete")){
                 AgregarPaquete();
             }else if(opcion.equals("Agregar Entregable")){
+                arbol.raiz.hijos.printHijos(arbol.raiz);
                 AgregarEntregable();
                 
             }
