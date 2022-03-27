@@ -7,6 +7,8 @@ package LabEstructuras;
 
 
 
+import Menu.MenuItem;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
@@ -33,6 +35,8 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     int xmax, ymax, numpaquetes, verificaerrores;
     Boolean inEntregable, inPaquete, isFileAdded;
     Container container;
+    JPanel menuDesplegable, panel, panelScrollMenu;
+    JButton btnBackMain;
     JButton btnEDT, btnCronograma, btnGuardar, btnGuardarArchivo, btnEntregable, btnFileChooser, btnGuardarEntregable;
     JLabel lblPrincipal, lblPEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion, lblEscriba;
     JComboBox selectorOption, selectorPaquete;
@@ -41,7 +45,8 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     Arbol arbol;
     JFileChooser archivoEntregable;
     ArrayList<String> options;
-
+    JScrollPane scrollMenuDesplegable;
+    
     public Display(int xmax, int ymax){
         this.xmax = xmax;
         this.ymax = ymax;
@@ -57,6 +62,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         lblPrincipal = new JLabel();
         btnEDT = new JButton();
         btnCronograma = new JButton();
+        btnBackMain = new JButton();
         lblPEDT = new JLabel();
         selectorOption = new JComboBox();
         txtNombrePaqueteNuevo = new JTextField();
@@ -80,6 +86,10 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         lblEscriba = new JLabel();
         txtArea = new JTextArea();
         btnGuardarArchivo = new JButton();
+        panel = new JPanel();
+        menuDesplegable = new JPanel();
+        scrollMenuDesplegable = new JScrollPane();
+        panelScrollMenu = new JPanel();
     }
     
     private void addActionsListener(){
@@ -91,38 +101,60 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         btnEntregable.addActionListener(this);
         btnGuardarArchivo.addActionListener(this);
         btnGuardarEntregable.addActionListener(this);
+        btnBackMain.addActionListener(this);
     }
+   //CONFIGURAR BOTON DEL BACK TO MAIN
+    //PREGUNTAR SI SE PUEDE CAMBIAR EL DISEÑO -> Katy y Natalia
+    
     
     //Pantallas
     private void pantallaPrincipal(){
-            container.setLayout(null);
-            container.setBackground(Color.getHSBColor(450, 345, 706));
+        container.setLayout(null);
+        container.setBackground(Color.getHSBColor(450, 345, 706));
+        
+        lblPrincipal.setText("Proyect Management");
+        lblPrincipal.setFont(new Font("Monospaced",Font.CENTER_BASELINE,60));
+        lblPrincipal.setSize(670, 300);
+        lblPrincipal.setForeground(Color.WHITE);
+        lblPrincipal.setLocation((xmax-670)/2, 20);
             
-            lblPrincipal.setText("Proyect Management");
-            lblPrincipal.setFont(new Font("Monospaced",Font.CENTER_BASELINE,60));
-            lblPrincipal.setSize(670, 300);
-            lblPrincipal.setForeground(Color.WHITE);
-            lblPrincipal.setLocation((xmax-670)/2, 20);
+        btnEDT.setText("EDT");
+        btnEDT.setSize(300,100);
+        btnEDT.setLocation(((xmax-670)/2)-50,400);
             
-            btnEDT.setText("EDT");
-            btnEDT.setSize(300,100);
-            btnEDT.setLocation(((xmax-670)/2)-50,400);
+        btnCronograma.setText("Cronograma");
+        btnCronograma.setSize(300,100);
+        btnCronograma.setLocation((xmax/2)+50,400);
             
-            btnCronograma.setText("Cronograma");
-            btnCronograma.setSize(300,100);
-            btnCronograma.setLocation((xmax/2)+50,400);
-            
-            addToContainer(lblPrincipal, btnEDT, btnCronograma);
+        addToContainer(lblPrincipal, btnEDT, btnCronograma);
     }
     
     private void pantallaEDT(){
         container.setBackground(Color.getHSBColor(480, 345, 706));
         
+        panel.setBounds(0,0, xmax, ymax / 19);
+        panel.setBackground(new Color(42, 132, 184));
+        
+        menuDesplegable.setSize(xmax / 2 - (xmax / 8), ymax / 2 + (ymax / 3));
+        menuDesplegable.setLocation(0, ymax - menuDesplegable.getHeight());
+        
+        scrollMenuDesplegable.setBounds(menuDesplegable.getX(), menuDesplegable.getY(), menuDesplegable.getWidth(), menuDesplegable.getHeight());
+        scrollMenuDesplegable.setBorder(null);
+        
+        panelScrollMenu.setBounds(scrollMenuDesplegable.getX(), scrollMenuDesplegable.getY(),scrollMenuDesplegable.getWidth(), scrollMenuDesplegable.getHeight());
+        panelScrollMenu.setLayout(new BoxLayout(panelScrollMenu, BoxLayout.Y_AXIS));
+                
+        scrollMenuDesplegable.setViewportView(panelScrollMenu);
+        
+        menuDesplegable.add(scrollMenuDesplegable);
+        
+        execute();
+        
         lblPEDT.setText("EDT");
         lblPEDT.setFont(new Font("Monospaced",Font.CENTER_BASELINE,60));
         lblPEDT.setSize(110, 60);
         lblPEDT.setForeground(Color.BLACK);
-        lblPEDT.setLocation((xmax - lblPEDT.getWidth()) / 2  , 60);
+        lblPEDT.setLocation((xmax - lblPEDT.getWidth()) / 2  , 75);
         
         lblSeleccionEDT.setText("Seleccione:");
         lblSeleccionEDT.setFont(new Font("Monospaced",Font.CENTER_BASELINE,40));
@@ -135,10 +167,37 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         selectorOption.addItem("Agregar Entregable");
         selectorOption.setBounds(lblPEDT.getX() + 40, lblPEDT.getY() + 290, 400, 40);
         
-        addToContainer(selectorOption, lblPEDT, lblSeleccionEDT); 
+        btnBackMain.setSize(250, 80);
+        btnBackMain.setLocation(xmax - (btnBackMain.getWidth() + xmax / 18) , ymax - (btnBackMain.getHeight() * 2));
+        btnBackMain.setText("Regresar");
+        
+        addToContainer(menuDesplegable, panel, lblPEDT, lblSeleccionEDT, selectorOption, btnBackMain); 
+        
         container.validate();
         container.repaint();
     }
+
+    
+    //no terminado
+    //falta revisar el tamaño
+    private void execute(){
+        ImageIcon iconPaquete = new ImageIcon(getClass().getResource("/Menu/paquete.png"));
+        ImageIcon iconFile = new ImageIcon(getClass().getResource("/Menu/file.png"));
+                
+        MenuItem menuP1 = new MenuItem(panelScrollMenu.getWidth(), 50, iconPaquete, "example1", null);
+        MenuItem menuP2 = new MenuItem(panelScrollMenu.getWidth(), 50, iconPaquete, "example2", null);
+        MenuItem menuP3 = new MenuItem(panelScrollMenu.getWidth(), 30, iconPaquete, "example3", null);
+        
+        addMenu(menuP1, menuP2, menuP3);
+    }
+    
+    private void addMenu(MenuItem ...menu){
+        for(MenuItem item: menu){
+            panelScrollMenu.add(item);
+        }
+        panelScrollMenu.revalidate(); 
+    }
+    
 
     //Opciones
     private void GUIAgregarPaquete(){
@@ -300,11 +359,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         
     private void agregarAlArbolPaquete(){
         options.add(paquetePadre + "~>" + txtNombrePaqueteNuevo.getText());
-        if (paquetePadre.length()>5){
-                int i;
-                i = paquetePadre.lastIndexOf(">");
-                paquetePadre = paquetePadre.substring(i+1, paquetePadre.length());
-        }
+        findPaquetePadre();
         arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, txtNombrePaqueteNuevo.getText());
         numpaquetes++;
         selectorPaquete.removeAllItems();
@@ -316,12 +371,16 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     }
 
     private void agregarAlArbolEntregable(){
+        findPaquetePadre();
+        arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, nombreArchivo);
+    }
+    
+    private void findPaquetePadre(){
         if (paquetePadre.length()>5){
                 int i;
                 i = paquetePadre.lastIndexOf(">");
                 paquetePadre = paquetePadre.substring(i+1, paquetePadre.length());
         }
-        arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, nombreArchivo);
     }
     
     private void escribirArchivo(){
