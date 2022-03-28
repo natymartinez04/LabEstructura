@@ -19,14 +19,13 @@ public class LabEstructura {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Toolkit tk = Toolkit.getDefaultToolkit(); 
-        int xmax = (int) tk.getScreenSize().getWidth();  
-        int ymax = (int) tk.getScreenSize().getHeight(); 
-        JFrame display = new Display(xmax,ymax);
+        
+        JFrame display = new Display(1500, 1000);
         display.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        display.setSize(xmax,ymax);
+        display.setSize(1500, 1000);
         display.setResizable(false);
         display.setVisible(true);
+        display.setLocationRelativeTo(null);
     }
     
 }

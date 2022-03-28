@@ -11,6 +11,7 @@ import Menu.MenuItem;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,21 +32,21 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class Display extends JFrame implements ItemListener, ActionListener{
     
-    String opcion, paquetePadre, nombreArchivo;
-    int xmax, ymax, numpaquetes, verificaerrores;
-    Boolean inEntregable, inPaquete, isFileAdded;
-    Container container;
-    JPanel menuDesplegable, panel, panelScrollMenu;
-    JButton btnBackMain;
-    JButton btnEDT, btnCronograma, btnGuardar, btnGuardarArchivo, btnEntregable, btnFileChooser, btnGuardarEntregable;
-    JLabel lblPrincipal, lblPEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion, lblEscriba;
-    JComboBox selectorOption, selectorPaquete;
-    JTextField txtNombrePaqueteNuevo;
-    JTextArea txtArea;
-    Arbol arbol;
-    JFileChooser archivoEntregable;
-    ArrayList<String> options;
-    JScrollPane scrollMenuDesplegable;
+    private String opcion, paquetePadre, nombreArchivo;
+    private int xmax, ymax, numpaquetes, verificaerrores;
+    private Boolean inEntregable, inPaquete, isFileAdded;
+    private Container container;
+    private JPanel panelMenu, panelHeader, panelScrollMenu;
+    private JButton btnBackMain;
+    private JButton btnEDT, btnCronograma, btnGuardar, btnGuardarArchivo, btnEntregable, btnFileChooser, btnGuardarEntregable;
+    private JLabel lblPrincipal, lblEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion, lblEscriba;
+    private JComboBox selectorOption, selectorPaquete;
+    private JTextField txtNombrePaqueteNuevo;
+    private JTextArea txtArea;
+    private Arbol arbol;
+    private JFileChooser archivoEntregable;
+    private ArrayList<String> options;
+    private JScrollPane scrollMenu;
     
     public Display(int xmax, int ymax){
         this.xmax = xmax;
@@ -63,7 +64,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         btnEDT = new JButton();
         btnCronograma = new JButton();
         btnBackMain = new JButton();
-        lblPEDT = new JLabel();
+        lblEDT = new JLabel();
         selectorOption = new JComboBox();
         txtNombrePaqueteNuevo = new JTextField();
         lblNombrePaquete = new JLabel();
@@ -86,9 +87,9 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         lblEscriba = new JLabel();
         txtArea = new JTextArea();
         btnGuardarArchivo = new JButton();
-        panel = new JPanel();
-        menuDesplegable = new JPanel();
-        scrollMenuDesplegable = new JScrollPane();
+        panelHeader = new JPanel();
+        panelMenu = new JPanel();
+        scrollMenu = new JScrollPane();
         panelScrollMenu = new JPanel();
     }
     
@@ -116,11 +117,11 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         lblPrincipal.setFont(new Font("Monospaced",Font.CENTER_BASELINE,60));
         lblPrincipal.setSize(670, 300);
         lblPrincipal.setForeground(Color.WHITE);
-        lblPrincipal.setLocation((xmax-670)/2, 20);
+        lblPrincipal.setLocation((xmax - 670)/2, 20);
             
         btnEDT.setText("EDT");
         btnEDT.setSize(300,100);
-        btnEDT.setLocation(((xmax-670)/2)-50,400);
+        btnEDT.setLocation(((xmax - 670)/2)-50,400);
             
         btnCronograma.setText("Cronograma");
         btnCronograma.setSize(300,100);
@@ -132,46 +133,57 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     private void pantallaEDT(){
         container.setBackground(Color.getHSBColor(480, 345, 706));
         
-        panel.setBounds(0,0, xmax, ymax / 19);
-        panel.setBackground(new Color(42, 132, 184));
+        panelHeader.setBounds(0,0, xmax, ymax / 11);
+        panelHeader.setBackground(new Color(42, 132, 184));
         
-        menuDesplegable.setSize(xmax / 2 - (xmax / 8), ymax / 2 + (ymax / 3));
-        menuDesplegable.setLocation(0, ymax - menuDesplegable.getHeight());
+        panelMenu.setSize(new Dimension(xmax / 2 - (xmax / 7), ymax - (panelHeader.getHeight() + 40)));
+        panelMenu.setLocation(0, panelHeader.getHeight());
         
-        scrollMenuDesplegable.setBounds(menuDesplegable.getX(), menuDesplegable.getY(), menuDesplegable.getWidth(), menuDesplegable.getHeight());
-        scrollMenuDesplegable.setBorder(null);
+        //scrollMenu.setBounds(panelMenu.getX(), panelMenu.getY(), panelMenu.getWidth(), panelMenu.getHeight());
+        scrollMenu.setBorder(null);
         
-        panelScrollMenu.setBounds(scrollMenuDesplegable.getX(), scrollMenuDesplegable.getY(),scrollMenuDesplegable.getWidth(), scrollMenuDesplegable.getHeight());
+        //panelScrollMenu.setBounds(scrollMenu.getX(), scrollMenu.getY(), scrollMenu.getWidth(), scrollMenu.getHeight());
         panelScrollMenu.setLayout(new BoxLayout(panelScrollMenu, BoxLayout.Y_AXIS));
-                
-        scrollMenuDesplegable.setViewportView(panelScrollMenu);
         
-        menuDesplegable.add(scrollMenuDesplegable);
+        scrollMenu.setViewportView(panelScrollMenu);
+        
+        GroupLayout panelMenuLayout = new GroupLayout(panelMenu);
+        panelMenu.setLayout(panelMenuLayout);
+        panelMenuLayout.setHorizontalGroup(
+            panelMenuLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(scrollMenu, GroupLayout.DEFAULT_SIZE, xmax / 2 - (xmax / 7), Short.MAX_VALUE)
+        );
+        panelMenuLayout.setVerticalGroup(
+            panelMenuLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(scrollMenu, GroupLayout.DEFAULT_SIZE, ymax - (panelHeader.getHeight() + 40), Short.MAX_VALUE)
+        );
         
         execute();
         
-        lblPEDT.setText("EDT");
-        lblPEDT.setFont(new Font("Monospaced",Font.CENTER_BASELINE,60));
-        lblPEDT.setSize(110, 60);
-        lblPEDT.setForeground(Color.BLACK);
-        lblPEDT.setLocation((xmax - lblPEDT.getWidth()) / 2  , 75);
+        lblEDT.setText("EDT");
+        lblEDT.setFont(new Font("Monospaced", Font.CENTER_BASELINE, 60));
+        lblEDT.setSize(110, 60);
+        lblEDT.setForeground(Color.LIGHT_GRAY);
+        lblEDT.setLocation((xmax - lblEDT.getWidth())/2 , 25);
+        
+        panelHeader.add(lblEDT);
         
         lblSeleccionEDT.setText("Seleccione:");
         lblSeleccionEDT.setFont(new Font("Monospaced",Font.CENTER_BASELINE,40));
         lblSeleccionEDT.setForeground(Color.WHITE);
-        lblSeleccionEDT.setBounds(lblPEDT.getX() - 15 , lblPEDT.getY() + 225, 350, 40);
+        lblSeleccionEDT.setBounds(lblEDT.getX() - 105 , lblEDT.getY() + 245, 350, 40);
         
         selectorOption.setVisible(true);
         selectorOption.addItem("-");
         selectorOption.addItem("Agregar Paquete");
         selectorOption.addItem("Agregar Entregable");
-        selectorOption.setBounds(lblPEDT.getX() + 40, lblPEDT.getY() + 290, 400, 40);
+        selectorOption.setBounds(lblSeleccionEDT.getX() + 60, lblSeleccionEDT.getY() + 60, 400, 40);
         
         btnBackMain.setSize(250, 80);
         btnBackMain.setLocation(xmax - (btnBackMain.getWidth() + xmax / 18) , ymax - (btnBackMain.getHeight() * 2));
         btnBackMain.setText("Regresar");
         
-        addToContainer(menuDesplegable, panel, lblPEDT, lblSeleccionEDT, selectorOption, btnBackMain); 
+        addToContainer(panelMenu, panelHeader, lblSeleccionEDT, selectorOption, btnBackMain); 
         
         container.validate();
         container.repaint();
@@ -183,10 +195,16 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     private void execute(){
         ImageIcon iconPaquete = new ImageIcon(getClass().getResource("/Menu/paquete.png"));
         ImageIcon iconFile = new ImageIcon(getClass().getResource("/Menu/file.png"));
-                
-        MenuItem menuP1 = new MenuItem(panelScrollMenu.getWidth(), 50, iconPaquete, "example1", null);
-        MenuItem menuP2 = new MenuItem(panelScrollMenu.getWidth(), 50, iconPaquete, "example2", null);
-        MenuItem menuP3 = new MenuItem(panelScrollMenu.getWidth(), 30, iconPaquete, "example3", null);
+               
+        //Create Submenu
+        MenuItem menuS1 = new MenuItem(iconPaquete, "subpaquete1", null);
+        MenuItem menuS2 = new MenuItem(iconFile, "file1", null);
+        MenuItem menuS3 = new MenuItem(iconFile, "file2", null);
+        
+        //Paquete
+        MenuItem menuP1 = new MenuItem(iconPaquete, "example1", null, menuS1, menuS2, menuS3);
+        MenuItem menuP2 = new MenuItem(iconPaquete, "example2", null);
+        MenuItem menuP3 = new MenuItem(iconPaquete, "example3", null);
         
         addMenu(menuP1, menuP2, menuP3);
     }
@@ -194,6 +212,10 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     private void addMenu(MenuItem ...menu){
         for(MenuItem item: menu){
             panelScrollMenu.add(item);
+            ArrayList<MenuItem> subMenu = item.getSubMenu();
+            for(MenuItem m: subMenu){
+                addMenu(m);
+            }
         }
         panelScrollMenu.revalidate(); 
     }
@@ -212,9 +234,11 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         lblUbicacion.setBounds(lblSeleccionEDT.getX(), lblSeleccionEDT.getY() + 20, 600, 300);
         
         selectorPaquete.setVisible(true);
+        
         for(String op: options){
             selectorPaquete.addItem(op);
         }
+        
         selectorPaquete.setBounds(selectorOption.getX(), lblUbicacion.getY() + 200, selectorOption.getWidth(), selectorOption.getHeight());
         
         lblNombrePaquete.setText("Ingrese Nombre Del Paquete:");
@@ -227,8 +251,8 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         
         btnGuardar.setVisible(true);
         btnGuardar.setText("Guardar");
-        btnGuardar.setForeground(Color.GREEN);
-        btnGuardar.setBounds(txtNombrePaqueteNuevo.getX() + 20,txtNombrePaqueteNuevo.getY() + 70, 100 ,40 );
+        btnGuardar.setForeground(Color.BLUE);
+        btnGuardar.setBounds(txtNombrePaqueteNuevo.getX() + 110,txtNombrePaqueteNuevo.getY() + 90, 180 , 40);
         
         btnFileChooser.setVisible(false);
         

@@ -5,6 +5,8 @@
  */
 package Menu;
 
+
+import LabEstructuras.Display;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
@@ -13,6 +15,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.GroupLayout;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -24,12 +27,15 @@ import javax.swing.LayoutStyle;
  */
 public class MenuItem extends JPanel{
     
+    private int xmax, ymax;
     private ActionListener act;
     private JSeparator separator;
+    private Icon icon;
     private JLabel lblIcon;
     private JLabel lblNombre;
     private ArrayList<MenuItem> subMenu;
     private Boolean showing;
+    private Icon iconArrow;
     
     public void setShowing(boolean showing){
         this.showing = showing;
@@ -39,7 +45,12 @@ public class MenuItem extends JPanel{
         return subMenu;
     }
     
-    public MenuItem(int xmax, int ymax, Icon icon, String nombreMenu, ActionListener act, MenuItem ...subMenu ){
+    public MenuItem(Icon icon, String nombreMenu, ActionListener act, MenuItem ...subMenu ){
+        iconArrow = new ImageIcon(getClass().getResource("/Menu/arrow.png"));
+        
+        this.xmax = 530;
+        this.ymax = 50;
+        this.icon = icon;
         
         initComponents();
         
@@ -62,6 +73,7 @@ public class MenuItem extends JPanel{
     }
     
     private void initComponents(){
+        showing = false;
         subMenu = new ArrayList<>();
         separator = new JSeparator();
         lblIcon = new JLabel();
@@ -77,16 +89,14 @@ public class MenuItem extends JPanel{
         
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
-        
         layout.setHorizontalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addComponent(separator)
-                .addGroup(
-                    layout.createSequentialGroup()
+                .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(lblIcon, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(lblNombre, GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                    .addComponent(lblNombre, GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
                     .addContainerGap()
                 )
         );
@@ -102,7 +112,7 @@ public class MenuItem extends JPanel{
                         .addComponent(lblIcon, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(separator, GroupLayout.PREFERRED_SIZE, 4, GroupLayout.PREFERRED_SIZE) 
-                .addGap(0, 0, 0)   
+                .addGap(0, 0, 0)
             )
         );
     }    
@@ -126,11 +136,12 @@ public class MenuItem extends JPanel{
                     pause();
                     subMenu.get(i).setVisible(true);
                 }
+                showing = true;
+                lblIcon.setIcon(iconArrow);
+                getParent().repaint();
+                getParent().revalidate();
             }
         }).start();
-        showing = true;
-        repaint();
-        revalidate();
     }
     
     private void hideMenu(){
@@ -142,11 +153,12 @@ public class MenuItem extends JPanel{
                     subMenu.get(i).setVisible(false);
                     subMenu.get(i).hideMenu();
                 }
+                showing = false;
+                lblIcon.setIcon(icon);
+                getParent().repaint();
+                getParent().revalidate();
             }
         }).start();
-        showing = false;
-        repaint();
-        revalidate();
     }
     
     private void pause(){
