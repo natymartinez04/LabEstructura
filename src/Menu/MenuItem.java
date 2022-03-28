@@ -46,7 +46,7 @@ public class MenuItem extends JPanel{
     }
     
     public MenuItem(Icon icon, String nombreMenu, ActionListener act, MenuItem ...subMenu ){
-        iconArrow = new ImageIcon(getClass().getResource("/Menu/arrow.png"));
+        iconArrow = new ImageIcon(getClass().getResource("/Images/arrow.png"));
         
         this.xmax = 530;
         this.ymax = 50;

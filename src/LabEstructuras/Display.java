@@ -33,16 +33,15 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class Display extends JFrame implements ItemListener, ActionListener{
     
     private String opcion, paquetePadre, nombreArchivo;
-    private int xmax, ymax, numpaquetes, verificaerrores;
-    private Boolean inEntregable, inPaquete, isFileAdded;
+    private int xmax, ymax, numpaquetes;
+    private Boolean inEntregable, inPaquete;
     private Container container;
     private JPanel panelMenu, panelHeader, panelScrollMenu;
     private JButton btnBackMain;
-    private JButton btnEDT, btnCronograma, btnGuardar, btnGuardarArchivo, btnEntregable, btnFileChooser, btnGuardarEntregable;
-    private JLabel lblPrincipal, lblEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion, lblEscriba;
+    private JButton btnEDT, btnCronograma, btnGuardar, btnGuardarArchivo, btnFileChooser, btnGuardarEntregable;
+    private JLabel lblPrincipal, lblEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion;
     private JComboBox selectorOption, selectorPaquete;
     private JTextField txtNombrePaqueteNuevo;
-    private JTextArea txtArea;
     private Arbol arbol;
     private JFileChooser archivoEntregable;
     private ArrayList<String> options;
@@ -76,16 +75,12 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         options = new ArrayList<String>();
         options.add("-");
         options.add("EDT");
-        selectorPaquete = new JComboBox();
-        btnEntregable = new JButton();
+        selectorPaquete = new JComboBox();  
         btnFileChooser = new JButton();
         btnGuardarEntregable = new JButton();
         nombreArchivo = "null";
         inEntregable = false;
         inPaquete = false;
-        isFileAdded = false;
-        lblEscriba = new JLabel();
-        txtArea = new JTextArea();
         btnGuardarArchivo = new JButton();
         panelHeader = new JPanel();
         panelMenu = new JPanel();
@@ -99,14 +94,11 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         selectorOption.addItemListener(this);
         selectorPaquete.addItemListener(this);
         btnFileChooser.addActionListener(this);
-        btnEntregable.addActionListener(this);
         btnGuardarArchivo.addActionListener(this);
         btnGuardarEntregable.addActionListener(this);
         btnBackMain.addActionListener(this);
     }
    //CONFIGURAR BOTON DEL BACK TO MAIN
-    //PREGUNTAR SI SE PUEDE CAMBIAR EL DISEÑO -> Katy y Natalia
-    
     
     //Pantallas
     private void pantallaPrincipal(){
@@ -139,10 +131,8 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         panelMenu.setSize(new Dimension(xmax / 2 - (xmax / 7), ymax - (panelHeader.getHeight() + 40)));
         panelMenu.setLocation(0, panelHeader.getHeight());
         
-        //scrollMenu.setBounds(panelMenu.getX(), panelMenu.getY(), panelMenu.getWidth(), panelMenu.getHeight());
         scrollMenu.setBorder(null);
         
-        //panelScrollMenu.setBounds(scrollMenu.getX(), scrollMenu.getY(), scrollMenu.getWidth(), scrollMenu.getHeight());
         panelScrollMenu.setLayout(new BoxLayout(panelScrollMenu, BoxLayout.Y_AXIS));
         
         scrollMenu.setViewportView(panelScrollMenu);
@@ -158,7 +148,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
             .addComponent(scrollMenu, GroupLayout.DEFAULT_SIZE, ymax - (panelHeader.getHeight() + 40), Short.MAX_VALUE)
         );
         
-        execute();
+        addPaqueteToMenu();
         
         lblEDT.setText("EDT");
         lblEDT.setFont(new Font("Monospaced", Font.CENTER_BASELINE, 60));
@@ -190,11 +180,9 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     }
 
     
-    //no terminado
-    //falta revisar el tamaño
-    private void execute(){
-        ImageIcon iconPaquete = new ImageIcon(getClass().getResource("/Menu/paquete.png"));
-        ImageIcon iconFile = new ImageIcon(getClass().getResource("/Menu/file.png"));
+    private void addPaqueteToMenu(){
+        ImageIcon iconPaquete = new ImageIcon(getClass().getResource("/Images/paquete.png"));
+        ImageIcon iconFile = new ImageIcon(getClass().getResource("/Images/file.png"));
                
         //Create Submenu
         MenuItem menuS1 = new MenuItem(iconPaquete, "subpaquete1", null);
@@ -225,7 +213,6 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     private void GUIAgregarPaquete(){
         inPaquete = true;
         inEntregable = false;
-        btnEntregable.setVisible(false);
         btnGuardarEntregable.setVisible(false);
         
         lblUbicacion.setText("Seleccione Ubicacion:");
@@ -282,12 +269,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         lblNombrePaquete.setFont(new Font("Monospaced", Font.CENTER_BASELINE, 35));
         lblNombrePaquete.setForeground(Color.WHITE);
         lblNombrePaquete.setBounds(lblUbicacion.getX(), selectorPaquete.getY() + 20, 600, 170);
-        /**
-        btnEntregable.setVisible(true);
-        btnEntregable.setText("Crear Entregable");
-        btnEntregable.setForeground(Color.RED);
-        btnEntregable.setBounds(selectorPaquete.getX(), lblNombrePaquete.getY() + 130, selectorPaquete.getWidth(), selectorPaquete.getHeight());
-        **/
+
         btnFileChooser.setVisible(true);
         btnFileChooser.setText("Importar Entregable");
         btnFileChooser.setForeground(Color.RED);
@@ -317,9 +299,10 @@ public class Display extends JFrame implements ItemListener, ActionListener{
             if (arbol.Existe(arbol.raiz, txtNombrePaqueteNuevo.getText())){
                 JOptionPane.showMessageDialog(null, "Este paquete ya existe");
             }else{
-                if(!verificarBadInput()){
+                if(!isBadInput()){
                     agregarAlArbolPaquete();
                     txtNombrePaqueteNuevo.setText("");
+                    JOptionPane.showMessageDialog(null, "Paquete Agregado!");
                 }
             }
         } 
@@ -334,48 +317,43 @@ public class Display extends JFrame implements ItemListener, ActionListener{
                 file.showOpenDialog(this);
                 File fileChoose = file.getSelectedFile();
                 nombreArchivo = fileChoose.getName();
-                System.out.println(nombreArchivo);
-                isFileAdded = true;  
+                System.out.println(nombreArchivo);  
+                JOptionPane.showMessageDialog(null, "Entregable Agregado!");
             }catch(Exception ex){
                 
             }
         }
-        
-        if(ae.getSource() == btnEntregable){
-            escribirArchivo();
-        }
-        
+
         if(ae.getSource() == btnGuardarEntregable){
             if (arbol.Existe(arbol.raiz, nombreArchivo)){
                 JOptionPane.showMessageDialog(null, "Ya existe un entregable con ese nombre");
             }else{
-                if(!verificarBadInput()){
+                if(!isBadInput()){
+                    System.out.println("Entre");
                     agregarAlArbolEntregable();
                 }
             }
         }    
     }
     
-    private boolean verificarBadInput(){
+    private boolean isBadInput(){
         if(inPaquete){
             if (txtNombrePaqueteNuevo.getText().isEmpty()){
                 JOptionPane.showMessageDialog(null, "Por favor ingrese el nombre del paquete que desee agregar");
-                verificaerrores++;
                 return true;
             }
             if ("-".equals(paquetePadre)){
                 JOptionPane.showMessageDialog(null, "Por favor seleccione el paquete padre");
-                verificaerrores++;
                 return true;
             }      
         }else if (inEntregable){
             if ("-".equals(paquetePadre)){
                 JOptionPane.showMessageDialog(null, "Por favor seleccione el paquete del entregable");
-                verificaerrores++;
                 return true;
             }
             if("null".equals(nombreArchivo)){
                 JOptionPane.showMessageDialog(null, "Por favor seleccione un entregable");
+                return true;
             }
         }
         return false;
@@ -407,27 +385,6 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         }
     }
     
-    private void escribirArchivo(){
-        container.setBackground(Color.getHSBColor(480, 345, 706));
-        
-        lblEscriba.setText("Escriba los datos a ingresar en su archivo");
-        lblEscriba.setFont(new Font("Monospaced",Font.CENTER_BASELINE,60));
-        lblEscriba.setSize(110, 40);
-        lblEscriba.setForeground(Color.BLACK);
-        lblEscriba.setLocation((xmax - lblEscriba.getWidth()) / 2  , 60);
-        
-        txtArea.setSize(500,100);
-        txtArea.setLocation((xmax/2)+50,400);
-        
-        btnGuardarArchivo.setText("Guardar Archivo");
-        btnGuardarArchivo.setSize(70,40);
-        btnGuardarArchivo.setLocation((xmax/2)+80,300);
-        
-        addToContainer(lblEscriba, txtArea, btnGuardarArchivo);
-        container.validate();
-        container.repaint();
-    }
-
     
     @Override
     public void itemStateChanged(ItemEvent e) {
