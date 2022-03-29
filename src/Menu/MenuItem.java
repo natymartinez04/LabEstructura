@@ -6,7 +6,6 @@
 package Menu;
 
 
-import LabEstructuras.Display;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
@@ -30,6 +29,7 @@ public class MenuItem extends JPanel{
     private int xmax, ymax;
     private ActionListener act;
     private JSeparator separator;
+    private String nombreMenu;
     private Icon icon;
     private JLabel lblIcon;
     private JLabel lblNombre;
@@ -48,6 +48,7 @@ public class MenuItem extends JPanel{
     public MenuItem(Icon icon, String nombreMenu, ActionListener act, MenuItem ...subMenu ){
         iconArrow = new ImageIcon(getClass().getResource("/Images/arrow.png"));
         
+        this.nombreMenu = nombreMenu;
         this.xmax = 530;
         this.ymax = 50;
         this.icon = icon;
@@ -117,6 +118,13 @@ public class MenuItem extends JPanel{
         );
     }    
     
+    public void addSubMenuItem(MenuItem ...subMenu){
+        for (MenuItem item : subMenu) {
+            this.subMenu.add(item);
+            item.setVisible(false);
+        }
+    }
+    
     private void formMousePressed(MouseEvent evt) {
         if(showing){
             hideMenu();
@@ -165,5 +173,9 @@ public class MenuItem extends JPanel{
         try{
             Thread.sleep(20);
         }catch(Exception e){}            
+    }
+    
+    public String getNombreMenu(){
+        return this.nombreMenu;
     }
 }

@@ -34,18 +34,6 @@ public class ListaEnlazada {
         } 
     }
 
-    /**public void printHijos(NodoArbol n){
-        System.out.println("Padre"+n.dato);
-        if (ptr == null){
-            System.out.println("No tiene hijos");
-        }else{
-            NodoLista p = ptr;
-            while (p != null){
-                System.out.println(p.nodoArbol.dato);
-                p = p.link;
-            }
-        } 
-    }**/
     
     public void InsertaEnPadreCorrecto(NodoArbol raiz, String datoPadre, String datoHijo){
         NodoLista a = raiz.hijos.ptr;

@@ -46,6 +46,9 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     private JFileChooser archivoEntregable;
     private ArrayList<String> options;
     private JScrollPane scrollMenu;
+    private ImageIcon iconPaquete, iconFile;
+    private ArrayList<MenuItem> paquetes;
+    private ArrayList<MenuItem> subPaquetes;
     
     public Display(int xmax, int ymax){
         this.xmax = xmax;
@@ -86,6 +89,8 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         panelMenu = new JPanel();
         scrollMenu = new JScrollPane();
         panelScrollMenu = new JPanel();
+        paquetes = new ArrayList<MenuItem>();
+        subPaquetes = new ArrayList<MenuItem>();
     }
     
     private void addActionsListener(){
@@ -181,20 +186,28 @@ public class Display extends JFrame implements ItemListener, ActionListener{
 
     
     private void addPaqueteToMenu(){
-        ImageIcon iconPaquete = new ImageIcon(getClass().getResource("/Images/paquete.png"));
-        ImageIcon iconFile = new ImageIcon(getClass().getResource("/Images/file.png"));
-               
+        iconPaquete = new ImageIcon(getClass().getResource("/Images/paquete.png"));
+        iconFile = new ImageIcon(getClass().getResource("/Images/file.png"));
+        
+        /*//create Submenu del submenu
+        MenuItem menuSS1 = new MenuItem(iconPaquete, "subpaquete1.1", null);
+        MenuItem menuSS2 = new MenuItem(iconFile, "file1.1", null);
+        MenuItem menuSS3 = new MenuItem(iconFile, "file2.1", null);
+        
         //Create Submenu
-        MenuItem menuS1 = new MenuItem(iconPaquete, "subpaquete1", null);
+        MenuItem menuS1 = new MenuItem(iconPaquete, "subpaquete1", null, menuSS1, menuSS2, menuSS3);
         MenuItem menuS2 = new MenuItem(iconFile, "file1", null);
         MenuItem menuS3 = new MenuItem(iconFile, "file2", null);
         
         //Paquete
-        MenuItem menuP1 = new MenuItem(iconPaquete, "example1", null, menuS1, menuS2, menuS3);
+        MenuItem menuP1 = new MenuItem(iconPaquete, "example1", null);
         MenuItem menuP2 = new MenuItem(iconPaquete, "example2", null);
         MenuItem menuP3 = new MenuItem(iconPaquete, "example3", null);
         
+        menuP1.addSubMenu(menuS1, menuS2, menuS3);
+        
         addMenu(menuP1, menuP2, menuP3);
+        */
     }
     
     private void addMenu(MenuItem ...menu){
@@ -208,7 +221,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         panelScrollMenu.revalidate(); 
     }
     
-
+    
     //Opciones
     private void GUIAgregarPaquete(){
         inPaquete = true;
@@ -364,6 +377,26 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         findPaquetePadre();
         arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, txtNombrePaqueteNuevo.getText());
         numpaquetes++;
+        
+        if(paquetePadre.equals("EDT")){
+            MenuItem menuP = new MenuItem(iconPaquete, txtNombrePaqueteNuevo.getText(), null);
+            paquetes.add(menuP);
+            addMenu(menuP);
+            for(MenuItem item: paquetes){
+                addMenu(item);
+            }
+        }else{
+            MenuItem menuP = getMenuItem(paquetePadre);
+            if(menuP != null){
+                MenuItem menuPH = new MenuItem(iconPaquete, txtNombrePaqueteNuevo.getText(), null);
+                subPaquetes.add(menuPH);
+                menuP.addSubMenuItem(menuPH);
+                for(MenuItem item: paquetes){
+                    addMenu(item);
+                }
+            }
+        }
+        
         selectorPaquete.removeAllItems();
         for(String op: options){
             selectorPaquete.addItem(op);
@@ -371,10 +404,34 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         validate();
         repaint();
     }
-
+    
+    private MenuItem getMenuItem(String padre){
+        for(MenuItem item: paquetes){
+            if(item.getNombreMenu().equals(padre)){
+                return item;
+            }
+        }
+        for(MenuItem item: subPaquetes){
+            if(item.getNombreMenu().equals(padre)){
+                return item;
+            }
+        }
+        return null;
+    }
+    
+    
     private void agregarAlArbolEntregable(){
         findPaquetePadre();
         arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, nombreArchivo);
+        
+        MenuItem menuP = getMenuItem(paquetePadre);
+        if(menuP != null){
+            MenuItem menuPH = new MenuItem(iconFile, nombreArchivo, null);
+            menuP.addSubMenuItem(menuPH);
+            for(MenuItem item: paquetes){
+                 addMenu(item);
+            }
+        }
     }
     
     private void findPaquetePadre(){
