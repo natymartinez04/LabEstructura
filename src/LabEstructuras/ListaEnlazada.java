@@ -1,15 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package LabEstructuras;
 
-import javax.swing.JOptionPane;
+package LabEstructuras;
 
 /**
  *
- * @author natymartinez04
+ * @author tllach, nmartinez, dkaty
  */
 public class ListaEnlazada {
     
@@ -34,18 +28,6 @@ public class ListaEnlazada {
         } 
     }
 
-    /**public void printHijos(NodoArbol n){
-        System.out.println("Padre"+n.dato);
-        if (ptr == null){
-            System.out.println("No tiene hijos");
-        }else{
-            NodoLista p = ptr;
-            while (p != null){
-                System.out.println(p.nodoArbol.dato);
-                p = p.link;
-            }
-        } 
-    }**/
     
     public void InsertaEnPadreCorrecto(NodoArbol raiz, String datoPadre, String datoHijo){
         NodoLista a = raiz.hijos.ptr;

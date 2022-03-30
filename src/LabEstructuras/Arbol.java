@@ -7,7 +7,7 @@ package LabEstructuras;
 
 /**
  *
- * @author natymartinez04
+ * @author tllach, nmartinez, dkaty
  */
 public class Arbol {
     NodoArbol raiz;
@@ -17,13 +17,6 @@ public class Arbol {
         this.raiz = null;
     }
     
-    public void imprimirArbol(NodoArbol raiz,int n,int conta){
-        if (raiz != null){
-            
-            
-        }
-        
-    }
     
     public Boolean Existe(NodoArbol raiz, String dato){
         Boolean encontrado = false;
@@ -41,5 +34,5 @@ public class Arbol {
         }
         return encontrado;
     }
-   }
+}
 
