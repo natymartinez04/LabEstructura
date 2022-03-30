@@ -7,7 +7,7 @@ package LabEstructuras;
 
 /**
  *
- * @author natymartinez04
+ * @author tllach, nmartinez, dkaty
  */
 public class Arbol {
     NodoArbol raiz;

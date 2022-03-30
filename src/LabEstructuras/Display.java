@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package LabEstructuras;
 
 
 
 import Menu.MenuItem;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -18,10 +13,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -29,26 +27,32 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 /**
  *
  * @author tllach, nmartinez, dkaty
- */
+ * 
+ **/
+
 public class Display extends JFrame implements ItemListener, ActionListener{
     
-    private String opcion, paquetePadre, nombreArchivo;
+    private String opcion, paquetePadre, nombreArchivo, rutaPaEscribir;
+    private static String nombreObject;
     private int xmax, ymax, numpaquetes;
     private Boolean inEntregable, inPaquete;
+    private Arbol arbol;
     private Container container;
-    private JPanel panelMenu, panelHeader, panelScrollMenu;
+    private JPanel panelMenu, panelHeader, panelScrollMenu, panelArchivo;
     private JButton btnBackMain;
     private JButton btnEDT, btnCronograma, btnGuardar, btnGuardarArchivo, btnFileChooser, btnGuardarEntregable;
     private JLabel lblPrincipal, lblEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion;
     private JComboBox selectorOption, selectorPaquete;
     private JTextField txtNombrePaqueteNuevo;
-    private Arbol arbol;
     private JFileChooser archivoEntregable;
-    private ArrayList<String> options;
-    private JScrollPane scrollMenu;
+    private JScrollPane scrollMenu, scrollPanelArchivo;
+    private JTextArea areaArchivo;
     private ImageIcon iconPaquete, iconFile;
-    private ArrayList<MenuItem> paquetes;
-    private ArrayList<MenuItem> subPaquetes;
+    private ArrayList<String> options;
+    private ArrayList<MenuItem> paquetes, subPaquetes;
+    private ArrayList<Color> colors;
+    private File fileChoose;
+    private MenuItem menuPH;
     
     public Display(int xmax, int ymax){
         this.xmax = xmax;
@@ -56,6 +60,8 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         declaracion();
         pantallaPrincipal(); 
         addActionsListener();
+        addResources();
+        setupVisualizarArchivo();
     }
     
     private void declaracion(){
@@ -75,7 +81,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         btnGuardar = new JButton();
         archivoEntregable = new JFileChooser();
         numpaquetes = 0;
-        options = new ArrayList<String>();
+        options = new ArrayList<>();
         options.add("-");
         options.add("EDT");
         selectorPaquete = new JComboBox();  
@@ -89,8 +95,12 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         panelMenu = new JPanel();
         scrollMenu = new JScrollPane();
         panelScrollMenu = new JPanel();
-        paquetes = new ArrayList<MenuItem>();
-        subPaquetes = new ArrayList<MenuItem>();
+        paquetes = new ArrayList<>();
+        subPaquetes = new ArrayList<>();
+        rutaPaEscribir = "c:src\\Files\\";
+        panelArchivo = new JPanel();
+        areaArchivo = new JTextArea();
+        scrollPanelArchivo = new JScrollPane();
     }
     
     private void addActionsListener(){
@@ -103,7 +113,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         btnGuardarEntregable.addActionListener(this);
         btnBackMain.addActionListener(this);
     }
-   //CONFIGURAR BOTON DEL BACK TO MAIN
+    //CONFIGURAR BOTON DEL BACK TO MAIN
     
     //Pantallas
     private void pantallaPrincipal(){
@@ -153,7 +163,6 @@ public class Display extends JFrame implements ItemListener, ActionListener{
             .addComponent(scrollMenu, GroupLayout.DEFAULT_SIZE, ymax - (panelHeader.getHeight() + 40), Short.MAX_VALUE)
         );
         
-        addPaqueteToMenu();
         
         lblEDT.setText("EDT");
         lblEDT.setFont(new Font("Monospaced", Font.CENTER_BASELINE, 60));
@@ -184,34 +193,14 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         container.repaint();
     }
 
-    
-    private void addPaqueteToMenu(){
+    private void addResources(){
         iconPaquete = new ImageIcon(getClass().getResource("/Images/paquete.png"));
         iconFile = new ImageIcon(getClass().getResource("/Images/file.png"));
-        
-        /*//create Submenu del submenu
-        MenuItem menuSS1 = new MenuItem(iconPaquete, "subpaquete1.1", null);
-        MenuItem menuSS2 = new MenuItem(iconFile, "file1.1", null);
-        MenuItem menuSS3 = new MenuItem(iconFile, "file2.1", null);
-        
-        //Create Submenu
-        MenuItem menuS1 = new MenuItem(iconPaquete, "subpaquete1", null, menuSS1, menuSS2, menuSS3);
-        MenuItem menuS2 = new MenuItem(iconFile, "file1", null);
-        MenuItem menuS3 = new MenuItem(iconFile, "file2", null);
-        
-        //Paquete
-        MenuItem menuP1 = new MenuItem(iconPaquete, "example1", null);
-        MenuItem menuP2 = new MenuItem(iconPaquete, "example2", null);
-        MenuItem menuP3 = new MenuItem(iconPaquete, "example3", null);
-        
-        menuP1.addSubMenu(menuS1, menuS2, menuS3);
-        
-        addMenu(menuP1, menuP2, menuP3);
-        */
     }
     
     private void addMenu(MenuItem ...menu){
         for(MenuItem item: menu){
+            panelScrollMenu.remove(item);
             panelScrollMenu.add(item);
             ArrayList<MenuItem> subMenu = item.getSubMenu();
             for(MenuItem m: subMenu){
@@ -220,8 +209,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         }
         panelScrollMenu.revalidate(); 
     }
-    
-    
+
     //Opciones
     private void GUIAgregarPaquete(){
         inPaquete = true;
@@ -328,9 +316,8 @@ public class Display extends JFrame implements ItemListener, ActionListener{
                 FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .txt files", "txt");
                 file.addChoosableFileFilter(restrict);
                 file.showOpenDialog(this);
-                File fileChoose = file.getSelectedFile();
+                fileChoose = file.getSelectedFile();
                 nombreArchivo = fileChoose.getName();
-                System.out.println(nombreArchivo);  
                 JOptionPane.showMessageDialog(null, "Entregable Agregado!");
             }catch(Exception ex){
                 
@@ -342,13 +329,78 @@ public class Display extends JFrame implements ItemListener, ActionListener{
                 JOptionPane.showMessageDialog(null, "Ya existe un entregable con ese nombre");
             }else{
                 if(!isBadInput()){
-                    System.out.println("Entre");
                     agregarAlArbolEntregable();
+                    guardarArchivo();
                 }
             }
         }    
     }
     
+    private void createFile(){
+        File archivo = new File(rutaPaEscribir + nombreArchivo);
+        try{
+            archivo.createNewFile();
+        }catch(IOException ioe){
+            ioe.printStackTrace();
+        }
+    }
+    
+    private void guardarArchivo(){
+        createFile();
+        FileWriter writer = null;
+        try{
+            //encuentra el archivo
+            writer = new FileWriter(rutaPaEscribir + nombreArchivo);
+            BufferedWriter bfwriter = new BufferedWriter(writer);
+            Scanner scanner = new Scanner(fileChoose);
+            while(scanner.hasNext()){
+                bfwriter.write(scanner.nextLine() + "\n");
+            }
+            bfwriter.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+    
+    private void setupVisualizarArchivo(){
+        panelArchivo.setSize(xmax - (xmax / 2 - (xmax / 7)), ymax - (ymax / 11));
+        panelArchivo.setLocation(xmax / 2 - (xmax / 7), ymax / 11);
+        panelArchivo.setBackground(Color.DARK_GRAY);
+        panelArchivo.setLayout(null);
+        
+        areaArchivo = new JTextArea();
+        areaArchivo.setSize(panelArchivo.getWidth() - 10, panelArchivo.getHeight() - 42);
+        areaArchivo.setLocation(panelArchivo.getX() - 533 , panelHeader.getHeight());
+        
+        scrollPanelArchivo = new JScrollPane(areaArchivo);
+        scrollPanelArchivo.setEnabled(false);
+        scrollPanelArchivo.setSize(panelArchivo.getWidth() - 10, panelArchivo.getHeight() - 42);
+        scrollPanelArchivo.setLocation(panelArchivo.getX() - 533 , panelHeader.getHeight());
+        
+        panelArchivo.add(scrollPanelArchivo);
+        panelArchivo.setVisible(false);
+        
+        addToContainer(panelArchivo);
+    }
+    
+    private void visualizarArchivo(){
+        if(areaArchivo.getText().length() > 0){
+            areaArchivo.setText("");
+        }
+        try{
+           FileReader reader = new FileReader(rutaPaEscribir + nombreObject);
+           BufferedReader buffer = new BufferedReader(reader);
+           
+           areaArchivo.read(buffer, null);
+           buffer.close();
+           areaArchivo.requestFocus();
+        }catch(Exception e){
+            
+        }
+        
+        panelArchivo.setVisible(!panelArchivo.isVisible());
+    }
+        
     private boolean isBadInput(){
         if(inPaquete){
             if (txtNombrePaqueteNuevo.getText().isEmpty()){
@@ -379,16 +431,15 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         numpaquetes++;
         
         if(paquetePadre.equals("EDT")){
-            MenuItem menuP = new MenuItem(iconPaquete, txtNombrePaqueteNuevo.getText(), null);
+            MenuItem menuP = new MenuItem(iconPaquete, txtNombrePaqueteNuevo.getText(), null, false);
             paquetes.add(menuP);
-            addMenu(menuP);
             for(MenuItem item: paquetes){
                 addMenu(item);
             }
         }else{
             MenuItem menuP = getMenuItem(paquetePadre);
             if(menuP != null){
-                MenuItem menuPH = new MenuItem(iconPaquete, txtNombrePaqueteNuevo.getText(), null);
+                MenuItem menuPH = new MenuItem(iconPaquete, txtNombrePaqueteNuevo.getText(), null, false);
                 subPaquetes.add(menuPH);
                 menuP.addSubMenuItem(menuPH);
                 for(MenuItem item: paquetes){
@@ -419,14 +470,18 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         return null;
     }
     
-    
     private void agregarAlArbolEntregable(){
         findPaquetePadre();
         arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, nombreArchivo);
         
         MenuItem menuP = getMenuItem(paquetePadre);
         if(menuP != null){
-            MenuItem menuPH = new MenuItem(iconFile, nombreArchivo, null);
+            menuPH = new MenuItem(iconFile, nombreArchivo, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    visualizarArchivo();
+                }
+            } , true);
             menuP.addSubMenuItem(menuPH);
             for(MenuItem item: paquetes){
                  addMenu(item);
@@ -435,13 +490,11 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     }
     
     private void findPaquetePadre(){
-        if (paquetePadre.length()>5){
-                int i;
-                i = paquetePadre.lastIndexOf(">");
-                paquetePadre = paquetePadre.substring(i+1, paquetePadre.length());
+        if (paquetePadre.length() > 5){
+            int i = paquetePadre.lastIndexOf(">");
+            paquetePadre = paquetePadre.substring(i + 1, paquetePadre.length());
         }
     }
-    
     
     @Override
     public void itemStateChanged(ItemEvent e) {
@@ -470,5 +523,9 @@ public class Display extends JFrame implements ItemListener, ActionListener{
             container.remove(obj);
         }
     } 
-
+    
+    public static void setNombreObject(String nombre){
+        Display.nombreObject = nombre;
+    }
+    
 }
