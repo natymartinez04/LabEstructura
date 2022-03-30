@@ -41,7 +41,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     private JPanel panelMenu, panelHeader, panelScrollMenu, panelArchivo;
     private JButton btnBackMain;
     private JButton btnEDT, btnCronograma, btnGuardar, btnGuardarArchivo, btnFileChooser, btnGuardarEntregable;
-    private JLabel lblPrincipal, lblEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion;
+    private JLabel lblPrincipal, lblEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion, lblNombreArchivo;
     private JComboBox selectorOption, selectorPaquete;
     private JTextField txtNombrePaqueteNuevo;
     private JFileChooser archivoEntregable;
@@ -101,6 +101,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         panelArchivo = new JPanel();
         areaArchivo = new JTextArea();
         scrollPanelArchivo = new JScrollPane();
+        lblNombreArchivo = new JLabel();
     }
     
     private void addActionsListener(){
@@ -318,7 +319,14 @@ public class Display extends JFrame implements ItemListener, ActionListener{
                 file.showOpenDialog(this);
                 fileChoose = file.getSelectedFile();
                 nombreArchivo = fileChoose.getName();
-                JOptionPane.showMessageDialog(null, "Entregable Agregado!");
+                lblNombreArchivo.setText(nombreArchivo);
+                lblNombreArchivo.setLocation(selectorPaquete.getX() + 100, lblNombrePaquete.getY() + 135);
+                lblNombreArchivo.setSize(nombreArchivo.length()*8, 30);
+                lblNombreArchivo.setFont(new Font("Arial", Font.ITALIC, 20));
+                lblNombreArchivo.setForeground(Color.DARK_GRAY);
+                btnFileChooser.setSize(200 ,40);
+                btnFileChooser.setLocation(selectorPaquete.getX() + 120 + lblNombreArchivo.getWidth(), lblNombrePaquete.getY() + 130);
+                addToContainer(lblNombreArchivo);
             }catch(Exception ex){
                 
             }
@@ -330,6 +338,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
             }else{
                 if(!isBadInput()){
                     agregarAlArbolEntregable();
+                    JOptionPane.showMessageDialog(null, "Entregable Agregado!");
                     guardarArchivo();
                 }
             }
@@ -456,20 +465,6 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         repaint();
     }
     
-    private MenuItem getMenuItem(String padre){
-        for(MenuItem item: paquetes){
-            if(item.getNombreMenu().equals(padre)){
-                return item;
-            }
-        }
-        for(MenuItem item: subPaquetes){
-            if(item.getNombreMenu().equals(padre)){
-                return item;
-            }
-        }
-        return null;
-    }
-    
     private void agregarAlArbolEntregable(){
         findPaquetePadre();
         arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, nombreArchivo);
@@ -487,6 +482,20 @@ public class Display extends JFrame implements ItemListener, ActionListener{
                  addMenu(item);
             }
         }
+    }
+    
+    private MenuItem getMenuItem(String padre){
+        for(MenuItem item: paquetes){
+            if(item.getNombreMenu().equals(padre)){
+                return item;
+            }
+        }
+        for(MenuItem item: subPaquetes){
+            if(item.getNombreMenu().equals(padre)){
+                return item;
+            }
+        }
+        return null;
     }
     
     private void findPaquetePadre(){
