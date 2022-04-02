@@ -14,9 +14,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.Vector;
 import javax.swing.GroupLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JColorChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -42,6 +45,11 @@ public class MenuItem extends JPanel{
     private final Icon iconArrowP;
     private final Icon iconArrowE;
     private Boolean isEntregable;
+    private int R,G,B;
+    Random random = new Random();
+
+
+    
     
     
     public void setShowing(boolean showing){
@@ -53,11 +61,12 @@ public class MenuItem extends JPanel{
     }
     
     public MenuItem(Icon icon, String nombreMenu, ActionListener act, boolean isEntregable){
+        Color fondo = new Color(255,255,255);
         iconArrowP = new ImageIcon(getClass().getResource("/Images/arrow.png"));
         iconArrowE = new ImageIcon(getClass().getResource("/Images/arrow2.png"));
         
         this.nombreMenu = nombreMenu;
-        this.xmax = 530;
+        this.xmax = 540;
         this.ymax = 50;
         this.icon = icon;
         this.isEntregable = isEntregable;
@@ -71,12 +80,17 @@ public class MenuItem extends JPanel{
         if(act != null){
             this.act = act;
         }
+        if (isEntregable == false){
+           fondo = JColorChooser.showDialog(lblIcon, "Escoga el color del paquete", this.getBackground());
+        }
         
         this.setSize(new Dimension(xmax, ymax));
         this.setMaximumSize(new Dimension(xmax, ymax));
         this.setMinimumSize(new Dimension(xmax, ymax));
+        this.setBackground(fondo);
         
     }
+    
     
     private void initComponents(){
         showing = false;
