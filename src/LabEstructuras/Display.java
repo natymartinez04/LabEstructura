@@ -1,4 +1,3 @@
-
 package LabEstructuras;
 
 
@@ -20,6 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import javafx.scene.layout.Border;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -32,7 +32,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Display extends JFrame implements ItemListener, ActionListener{
     
-    private String opcion, paquetePadre, nombreArchivo, rutaPaEscribir;
+    private String opcion, paquetePadre, nombreArchivo, rutaPaEscribir,proyecto;
     private static String nombreObject;
     private int xmax, ymax, numpaquetes;
     private Boolean inEntregable, inPaquete;
@@ -40,8 +40,8 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     private Container container;
     private JPanel panelMenu, panelHeader, panelScrollMenu, panelArchivo;
     private JButton btnBackMain;
-    private JButton btnEDT, btnCronograma, btnGuardar, btnGuardarArchivo, btnFileChooser, btnGuardarEntregable;
-    private JLabel lblPrincipal, lblEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion, lblNombreArchivo;
+    private JButton btnEDT, btnCronograma, btnGuardar, btnGuardarArchivo, btnFileChooser, btnGuardarEntregable,btnimprimirReporte;
+    private JLabel lblPrincipal, lblEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion, lblNombreArchivo,imagen,imagen2;
     private JComboBox selectorOption, selectorPaquete;
     private JTextField txtNombrePaqueteNuevo;
     private JFileChooser archivoEntregable;
@@ -53,10 +53,17 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     private ArrayList<Color> colors;
     private File fileChoose;
     private MenuItem menuPH;
+    private int colorprincipal=0;
     
-    public Display(int xmax, int ymax){
+    public Display(int xmax, int ymax,String proyecto){
         this.xmax = xmax;
         this.ymax = ymax;
+        this.proyecto = proyecto;
+        arbol = new Arbol();
+        arbol.raiz = new NodoArbol(proyecto);
+        options = new ArrayList<>();
+        options.add("-");
+        options.add(proyecto);
         declaracion();
         pantallaPrincipal(); 
         addActionsListener();
@@ -65,14 +72,15 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     }
     
     private void declaracion(){
-        arbol = new Arbol();
-        arbol.raiz = new NodoArbol("EDT");
         container = this.getContentPane();
         lblPrincipal = new JLabel();
         btnEDT = new JButton();
         btnCronograma = new JButton();
         btnBackMain = new JButton();
+        btnimprimirReporte = new JButton();
         lblEDT = new JLabel();
+        imagen = new JLabel();
+        imagen2 = new JLabel();
         selectorOption = new JComboBox();
         txtNombrePaqueteNuevo = new JTextField();
         lblNombrePaquete = new JLabel();
@@ -81,9 +89,6 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         btnGuardar = new JButton();
         archivoEntregable = new JFileChooser();
         numpaquetes = 0;
-        options = new ArrayList<>();
-        options.add("-");
-        options.add("EDT");
         selectorPaquete = new JComboBox();  
         btnFileChooser = new JButton();
         btnGuardarEntregable = new JButton();
@@ -113,33 +118,52 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         btnGuardarArchivo.addActionListener(this);
         btnGuardarEntregable.addActionListener(this);
         btnBackMain.addActionListener(this);
+        btnimprimirReporte.addActionListener(this);
     }
     //CONFIGURAR BOTON DEL BACK TO MAIN
     
     //Pantallas
     private void pantallaPrincipal(){
         container.setLayout(null);
-        container.setBackground(Color.getHSBColor(450, 345, 706));
+        container.setBackground(new Color(41, 96, 137));
         
-        lblPrincipal.setText("Proyect Management");
+        lblPrincipal.setText("Project Management");
         lblPrincipal.setFont(new Font("Monospaced",Font.CENTER_BASELINE,60));
         lblPrincipal.setSize(670, 300);
         lblPrincipal.setForeground(Color.WHITE);
         lblPrincipal.setLocation((xmax - 670)/2, 20);
-            
-        btnEDT.setText("EDT");
-        btnEDT.setSize(300,100);
+        
+        btnEDT.setIcon(new ImageIcon(getClass().getResource("/Images/button_edt.png")));
+        btnEDT.setSize(300,90);
         btnEDT.setLocation(((xmax - 670)/2)-50,400);
-            
-        btnCronograma.setText("Cronograma");
-        btnCronograma.setSize(300,100);
+        btnEDT.setContentAreaFilled(false);
+        btnEDT.setBorder(BorderFactory.createEmptyBorder());
+    
+
+        
+        imagen.setBounds(-20, -25, 500, 350);
+        imagen.setIcon(new ImageIcon(getClass().getResource("/Images/fondo3.gif")));
+        
+        imagen2.setBounds(1050, 300, 500, 500);
+        imagen2.setIcon(new ImageIcon(getClass().getResource("/Images/persi.gif")));
+        
+        
+        
+        btnCronograma.setIcon(new ImageIcon(getClass().getResource("/Images/button_cronograma.png")));
+        btnCronograma.setSize(300,90);
         btnCronograma.setLocation((xmax/2)+50,400);
+        btnCronograma.setContentAreaFilled(false);
+        btnCronograma.setBorder(BorderFactory.createEmptyBorder());
             
-        addToContainer(lblPrincipal, btnEDT, btnCronograma);
+        addToContainer(lblPrincipal, btnEDT, btnCronograma,imagen,imagen2);
     }
     
     private void pantallaEDT(){
         container.setBackground(Color.getHSBColor(480, 345, 706));
+        
+        btnimprimirReporte.setText("Imprimir Reporte");
+        btnimprimirReporte.setSize(300,50);
+        btnimprimirReporte.setLocation(1100,750);
         
         panelHeader.setBounds(0,0, xmax, ymax / 11);
         panelHeader.setBackground(new Color(42, 132, 184));
@@ -165,7 +189,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         );
         
         
-        lblEDT.setText("EDT");
+        lblEDT.setText(proyecto);
         lblEDT.setFont(new Font("Monospaced", Font.CENTER_BASELINE, 60));
         lblEDT.setSize(110, 60);
         lblEDT.setForeground(Color.LIGHT_GRAY);
@@ -188,7 +212,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         btnBackMain.setLocation(xmax - (btnBackMain.getWidth() + xmax / 18) , ymax - (btnBackMain.getHeight() * 2));
         btnBackMain.setText("Regresar");
         
-        addToContainer(panelMenu, panelHeader, lblSeleccionEDT, selectorOption, btnBackMain); 
+        addToContainer(panelMenu, panelHeader, lblSeleccionEDT, selectorOption, btnBackMain,btnimprimirReporte); 
         
         container.validate();
         container.repaint();
@@ -245,7 +269,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         
         btnFileChooser.setVisible(false);
         
-        addToContainer(txtNombrePaqueteNuevo, lblUbicacion, selectorPaquete, lblNombrePaquete, btnGuardar);
+        addToContainer(txtNombrePaqueteNuevo, lblUbicacion, selectorPaquete, lblNombrePaquete, btnGuardar,btnimprimirReporte);
         validate();
         repaint();
     }
@@ -290,7 +314,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     @Override
     public void actionPerformed(ActionEvent ae) {
         if(ae.getSource() == btnEDT){
-            removeOfContainer(lblPrincipal, btnEDT, btnCronograma);
+            removeOfContainer(lblPrincipal, btnEDT, btnCronograma,imagen,imagen2);
             container.validate();
             container.repaint();
             pantallaEDT();
@@ -307,7 +331,16 @@ public class Display extends JFrame implements ItemListener, ActionListener{
                     JOptionPane.showMessageDialog(null, "Paquete Agregado!");
                 }
             }
-        } 
+        }
+        if (ae.getSource() == btnimprimirReporte){
+            int altura;
+            altura = arbol.AlturaArbol(arbol.raiz);
+            System.out.println("Altura del árbol es: "+altura);
+            ListaEnlazada a = new ListaEnlazada();
+            //arbol.EncontrarFrontera(arbol.raiz,a);
+            //a.escribir(a);
+           
+        }
         
         if(ae.getSource() == btnFileChooser){
             try{
@@ -439,7 +472,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, txtNombrePaqueteNuevo.getText());
         numpaquetes++;
         
-        if(paquetePadre.equals("EDT")){
+        if(paquetePadre.equals(proyecto)){
             MenuItem menuP = new MenuItem(iconPaquete, txtNombrePaqueteNuevo.getText(), null, false);
             paquetes.add(menuP);
             for(MenuItem item: paquetes){
@@ -457,10 +490,13 @@ public class Display extends JFrame implements ItemListener, ActionListener{
             }
         }
         
+        
+        
         selectorPaquete.removeAllItems();
         for(String op: options){
             selectorPaquete.addItem(op);
         }
+ 
         validate();
         repaint();
     }
