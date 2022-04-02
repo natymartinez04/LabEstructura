@@ -34,5 +34,22 @@ public class Arbol {
         }
         return encontrado;
     }
+    
+    public int AlturaArbol(NodoArbol raiz){
+        if (raiz == null){
+            return -1;
+        }
+        int altura = -1;
+        NodoLista p = raiz.hijos.ptr;
+        while (p != null){
+            altura = Math.max(altura, AlturaArbol(p.nodoArbol));
+            p = p.link;
+        }    
+        return altura +1;
+    }
+   
+    
+    
+    
 }
 
