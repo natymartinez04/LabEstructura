@@ -20,7 +20,7 @@ public class LabEstructura {
      */
     public static void main(String[] args) {
         
-        JFrame display = new Display(1500, 1000);
+        JFrame display = new Display(1500, 1000, "EDT");
         display.setDefaultCloseOperation(EXIT_ON_CLOSE);
         display.setSize(1500, 1000);
         display.setResizable(false);

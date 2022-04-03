@@ -7,6 +7,7 @@ package Menu;
 
 
 import LabEstructuras.Display;
+import LabEstructuras.ListaEnlazada;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -40,7 +41,7 @@ public class MenuItem extends JPanel{
     private final Icon icon;
     private JLabel lblIcon;
     private JLabel lblNombre;
-    private ArrayList<MenuItem> subMenu;
+    private ListaEnlazada subMenu;
     private Boolean showing;
     private final Icon iconArrowP;
     private final Icon iconArrowE;
@@ -49,14 +50,11 @@ public class MenuItem extends JPanel{
     Random random = new Random();
 
 
-    
-    
-    
     public void setShowing(boolean showing){
         this.showing = showing;
     }
     
-    public ArrayList<MenuItem> getSubMenu(){
+    public ListaEnlazada getSubMenu(){
         return subMenu;
     }
     
@@ -71,8 +69,7 @@ public class MenuItem extends JPanel{
         this.icon = icon;
         this.isEntregable = isEntregable;
         
-        //initComponents();
-        testingLocation();
+        initComponents();
         
         lblIcon.setIcon(icon);
         lblNombre.setText(nombreMenu);
@@ -94,53 +91,7 @@ public class MenuItem extends JPanel{
     
     private void initComponents(){
         showing = false;
-        subMenu = new ArrayList<>();
-        separator = new JSeparator();
-        lblIcon = new JLabel();
-        lblNombre = new JLabel();
-        
-        setBackground(new Color(255, 255, 255));
-        
-        addMouseListener(new MouseAdapter(){
-            @Override
-            public void mousePressed(MouseEvent evt){
-                formMousePressed(evt);
-            }
-        });
-        
-        GroupLayout layout = new GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(separator)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()   
-                    .addComponent(lblIcon, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(lblNombre, GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
-                    .addContainerGap()
-                )
-        );
-        
-        layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(lblNombre, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(lblIcon, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(separator, GroupLayout.PREFERRED_SIZE, 4, GroupLayout.PREFERRED_SIZE) 
-                .addGap(0, 0, 0)
-            )
-        );
-    }    
-    
-    private void testingLocation(){
-        showing = false;
-        subMenu = new ArrayList<>();
+        subMenu = new ListaEnlazada();
         separator = new JSeparator();
         lblIcon = new JLabel();
         lblNombre = new JLabel();
@@ -169,11 +120,9 @@ public class MenuItem extends JPanel{
         this.add(lblNombre);
         this.add(new JSeparator(SwingConstants.HORIZONTAL));
     }
-    
-    
-    
+     
     public void addSubMenuItem(MenuItem item){
-        this.subMenu.add(item);
+        this.subMenu.insertN(item);
         item.setVisible(false);
     }
     
@@ -191,9 +140,10 @@ public class MenuItem extends JPanel{
     
     private void showMenu(){
         new Thread(() -> {
-            for(int i = 0; i < subMenu.size(); i++){
+            for(int i = 0; i < subMenu.getTamaño(); i++){
                 pause();
-                subMenu.get(i).setVisible(true);
+                MenuItem item = (MenuItem) subMenu.getInfoNodo(i);
+                item.setVisible(true);
             }
             showing = true;
             if(isEntregable){
@@ -208,10 +158,11 @@ public class MenuItem extends JPanel{
     
     private void hideMenu(){
         new Thread(() -> {
-            for(int i = subMenu.size() - 1; i >= 0; i--){
+            for(int i = subMenu.getTamaño() - 1; i >= 0; i--){
                 pause();
-                subMenu.get(i).setVisible(false);
-                subMenu.get(i).hideMenu();
+                MenuItem item = (MenuItem) subMenu.getInfoNodo(i);
+                item.setVisible(false);
+                item.hideMenu();
             }
             showing = false;
             
