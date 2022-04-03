@@ -47,6 +47,45 @@ public class Arbol {
         }    
         return altura +1;
     }
+    
+    public void NodosTerminales (NodoArbol raiz){
+        if (raiz.hijos.ptr == null){
+            System.out.print(raiz.dato+" ");
+        }else{
+            NodoLista p = raiz.hijos.ptr;
+            while(p != null){
+                if (p.nodoArbol.hijos == null){
+                    System.out.print(p.nodoArbol.dato+" ");
+                    
+                }
+                NodosTerminales(p.nodoArbol);
+                p = p.link;
+            }
+        }
+    }
+    public void Inorden(NodoArbol raiz){
+        if (raiz.hijos.ptr == null){
+            System.out.print(" "+raiz.dato);
+        }else{
+            NodoLista p = raiz.hijos.ptr;
+            Inorden(p.nodoArbol);
+            System.out.print(" "+p.nodoArbol.dato);
+            while(p != null){
+                Inorden(p.nodoArbol);
+                p = p.link;
+            }
+        }
+    }
+    
+    public void preorden(NodoArbol raiz){
+        
+    }
+    public void postorden(NodoArbol raiz){
+        
+    }
+    public void NodoSoloUnEntregable(NodoArbol raiz){
+        
+    }
    
     
     
