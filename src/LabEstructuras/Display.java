@@ -51,7 +51,6 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     private ListaEnlazada paquetes, subPaquetes;
     private File fileChoose;
     private MenuItem menuPH;
-    private int colorprincipal=0;
     
     public Display(int xmax, int ymax, String proyecto){
         this.xmax = xmax;
@@ -157,14 +156,16 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     }
     
     private void pantallaEDT(){
-        container.setBackground(Color.getHSBColor(480, 345, 706));
+        container.setBackground(new Color(41, 96, 137));
         
-        btnimprimirReporte.setText("Imprimir Reporte");
-        btnimprimirReporte.setSize(300,50);
-        btnimprimirReporte.setLocation(1100,750);
+        btnimprimirReporte.setIcon(new ImageIcon(getClass().getResource("/Images/button_imprimir-reporte.png")));
+        btnimprimirReporte.setContentAreaFilled(false);
+        btnimprimirReporte.setBorder(BorderFactory.createEmptyBorder());
+        btnimprimirReporte.setSize(300,100);
+        btnimprimirReporte.setLocation(1150,750);
         
         panelHeader.setBounds(0,0, xmax, ymax / 11);
-        panelHeader.setBackground(new Color(42, 132, 184));
+        panelHeader.setBackground(new Color(99,38,38));
         
         panelMenu.setSize(new Dimension(xmax / 2 - (xmax / 7), ymax - (panelHeader.getHeight() + 40)));
         panelMenu.setLocation(0, panelHeader.getHeight());
@@ -206,9 +207,12 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         selectorOption.addItem("Agregar Entregable");
         selectorOption.setBounds(lblSeleccionEDT.getX() + 60, lblSeleccionEDT.getY() + 60, 400, 40);
         
+        btnBackMain.setIcon(new ImageIcon(getClass().getResource("/Images/button_regresar.png")));
+        btnBackMain.setContentAreaFilled(false);
+        btnBackMain.setBorder(BorderFactory.createEmptyBorder());
         btnBackMain.setSize(250, 80);
-        btnBackMain.setLocation(xmax - (btnBackMain.getWidth() + xmax / 18) , ymax - (btnBackMain.getHeight() * 2));
-        btnBackMain.setText("Regresar");
+        btnBackMain.setLocation(xmax - (btnBackMain.getWidth() + xmax / 20) , ymax - (btnBackMain.getHeight() * 2));
+
         
         addToContainer(panelMenu, panelHeader, lblSeleccionEDT, selectorOption, btnBackMain,btnimprimirReporte); 
         
@@ -337,11 +341,16 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         
         if (ae.getSource() == btnimprimirReporte){
             int altura;
+            
             altura = arbol.AlturaArbol(arbol.raiz);
             System.out.println("Altura del árbol es: "+altura);
-            ListaEnlazada a = new ListaEnlazada();
-            //arbol.EncontrarFrontera(arbol.raiz,a);
-            //a.escribir(a);
+            
+            System.out.print("Nodos Terminales: ");
+            arbol.NodosTerminales(arbol.raiz);
+            
+            System.out.println("Recorrido en Inorden:");
+            arbol.Inorden(arbol.raiz);
+            
            
         }
         
