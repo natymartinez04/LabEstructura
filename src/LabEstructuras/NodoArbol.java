@@ -12,11 +12,14 @@ package LabEstructuras;
 public class NodoArbol {
     Object dato;
     ListaEnlazada hijos;
-
-    public NodoArbol(Object dato) {
+    Boolean tipo;
+    
+    public NodoArbol(Object dato,Boolean tipo) {
         this.dato = dato;
+        this.tipo = tipo;
         this.hijos = new ListaEnlazada();
     }
     
     
 }
+
