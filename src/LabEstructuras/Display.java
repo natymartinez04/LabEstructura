@@ -19,7 +19,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import javafx.scene.layout.Border;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -32,7 +31,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Display extends JFrame implements ItemListener, ActionListener{
     
-    private String opcion, paquetePadre, nombreArchivo, rutaPaEscribir,proyecto;
+    private String opcion, paquetePadre, nombreArchivo, rutaPaEscribir, proyecto;
     private static String nombreObject;
     private int xmax, ymax, numpaquetes;
     private Boolean inEntregable, inPaquete;
@@ -40,30 +39,29 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     private Container container;
     private JPanel panelMenu, panelHeader, panelScrollMenu, panelArchivo;
     private JButton btnBackMain;
-    private JButton btnEDT, btnCronograma, btnGuardar, btnGuardarArchivo, btnFileChooser, btnGuardarEntregable,btnimprimirReporte;
-    private JLabel lblPrincipal, lblEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion, lblNombreArchivo,imagen,imagen2;
+    private JButton btnEDT, btnCronograma, btnGuardar, btnGuardarArchivo, btnFileChooser, btnGuardarEntregable, btnimprimirReporte;
+    private JLabel lblPrincipal, lblEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion, lblNombreArchivo, imagen,imagen2;
     private JComboBox selectorOption, selectorPaquete;
     private JTextField txtNombrePaqueteNuevo;
     private JFileChooser archivoEntregable;
     private JScrollPane scrollMenu, scrollPanelArchivo;
     private JTextArea areaArchivo;
     private ImageIcon iconPaquete, iconFile;
-    private ArrayList<String> options;
-    private ArrayList<MenuItem> paquetes, subPaquetes;
-    private ArrayList<Color> colors;
+    private ListaEnlazada options;
+    private ListaEnlazada paquetes, subPaquetes;
     private File fileChoose;
     private MenuItem menuPH;
     private int colorprincipal=0;
     
-    public Display(int xmax, int ymax,String proyecto){
+    public Display(int xmax, int ymax, String proyecto){
         this.xmax = xmax;
         this.ymax = ymax;
         this.proyecto = proyecto;
         arbol = new Arbol();
         arbol.raiz = new NodoArbol(proyecto);
-        options = new ArrayList<>();
-        options.add("-");
-        options.add(proyecto);
+        options = new ListaEnlazada();
+        options.insertN("-");
+        options.insertN(proyecto);
         declaracion();
         pantallaPrincipal(); 
         addActionsListener();
@@ -100,8 +98,8 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         panelMenu = new JPanel();
         scrollMenu = new JScrollPane();
         panelScrollMenu = new JPanel();
-        paquetes = new ArrayList<>();
-        subPaquetes = new ArrayList<>();
+        paquetes = new ListaEnlazada();
+        subPaquetes = new ListaEnlazada();
         rutaPaEscribir = "c:src\\Files\\";
         panelArchivo = new JPanel();
         areaArchivo = new JTextArea();
@@ -227,8 +225,9 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         for(MenuItem item: menu){
             panelScrollMenu.remove(item);
             panelScrollMenu.add(item);
-            ArrayList<MenuItem> subMenu = item.getSubMenu();
-            for(MenuItem m: subMenu){
+            ListaEnlazada subMenu = item.getSubMenu();
+            for(int i = 0; i < subMenu.getTamaño(); i++){
+                MenuItem m = (MenuItem) subMenu.getInfoNodo(i);
                 addMenu(m);
             }
         }
@@ -240,6 +239,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         inPaquete = true;
         inEntregable = false;
         btnGuardarEntregable.setVisible(false);
+        lblNombreArchivo.setText("");
         
         lblUbicacion.setText("Seleccione Ubicacion:");
         lblUbicacion.setFont(new Font("Monospaced", Font.CENTER_BASELINE, 35));
@@ -248,8 +248,8 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         
         selectorPaquete.setVisible(true);
         
-        for(String op: options){
-            selectorPaquete.addItem(op);
+        for(int i = 0; i < options.getTamaño(); i++){
+            selectorPaquete.addItem((String) options.getInfoNodo(i));
         }
         
         selectorPaquete.setBounds(selectorOption.getX(), lblUbicacion.getY() + 200, selectorOption.getWidth(), selectorOption.getHeight());
@@ -286,9 +286,11 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         lblUbicacion.setBounds(lblSeleccionEDT.getX(), lblSeleccionEDT.getY() + 20, 600, 300);
         
         selectorPaquete.setVisible(true);
-        for(String op: options){
-            selectorPaquete.addItem(op);
+        
+        for(int i = 0; i < options.getTamaño(); i++){
+            selectorPaquete.addItem((String) options.getInfoNodo(i));
         }
+        
         selectorPaquete.setBounds(selectorOption.getX(), lblUbicacion.getY() + 200, selectorOption.getWidth(), selectorOption.getHeight());
         
         lblNombrePaquete.setText("Adjunte Entregable");
@@ -332,6 +334,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
                 }
             }
         }
+        
         if (ae.getSource() == btnimprimirReporte){
             int altura;
             altura = arbol.AlturaArbol(arbol.raiz);
@@ -372,13 +375,16 @@ public class Display extends JFrame implements ItemListener, ActionListener{
                 if(!isBadInput()){
                     agregarAlArbolEntregable();
                     JOptionPane.showMessageDialog(null, "Entregable Agregado!");
+                    btnFileChooser.setBounds(selectorPaquete.getX(), lblNombrePaquete.getY() + 130, selectorPaquete.getWidth(), selectorPaquete.getHeight());
+                    lblNombreArchivo.setText("");
+                    selectorPaquete.setSelectedIndex(0);
                     guardarArchivo();
                 }
             }
         }    
     }
     
-    private void createFile(){
+    private void creacionArchivo(){
         File archivo = new File(rutaPaEscribir + nombreArchivo);
         try{
             archivo.createNewFile();
@@ -388,7 +394,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     }
     
     private void guardarArchivo(){
-        createFile();
+        creacionArchivo();
         FileWriter writer = null;
         try{
             //encuentra el archivo
@@ -467,36 +473,37 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     }    
         
     private void agregarAlArbolPaquete(){
-        options.add(paquetePadre + "~>" + txtNombrePaqueteNuevo.getText());
+        options.insertN(paquetePadre + "~>" + txtNombrePaqueteNuevo.getText());
         findPaquetePadre();
         arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, txtNombrePaqueteNuevo.getText());
         numpaquetes++;
         
         if(paquetePadre.equals(proyecto)){
             MenuItem menuP = new MenuItem(iconPaquete, txtNombrePaqueteNuevo.getText(), null, false);
-            paquetes.add(menuP);
-            for(MenuItem item: paquetes){
+            paquetes.insertN(menuP);
+            for(int i = 0; i < paquetes.getTamaño(); i++){
+                MenuItem item = (MenuItem) paquetes.getInfoNodo(i);
                 addMenu(item);
             }
         }else{
             MenuItem menuP = getMenuItem(paquetePadre);
             if(menuP != null){
                 MenuItem menuPH = new MenuItem(iconPaquete, txtNombrePaqueteNuevo.getText(), null, false);
-                subPaquetes.add(menuPH);
+                subPaquetes.insertN(menuPH);
                 menuP.addSubMenuItem(menuPH);
-                for(MenuItem item: paquetes){
+                for(int i = 0; i < paquetes.getTamaño(); i++){
+                    MenuItem item = (MenuItem) paquetes.getInfoNodo(i);
                     addMenu(item);
                 }
             }
         }
         
-        
-        
         selectorPaquete.removeAllItems();
-        for(String op: options){
-            selectorPaquete.addItem(op);
+        
+        for(int i = 0; i < options.getTamaño(); i++){
+            selectorPaquete.addItem((String) options.getInfoNodo(i));
         }
- 
+
         validate();
         repaint();
     }
@@ -514,19 +521,21 @@ public class Display extends JFrame implements ItemListener, ActionListener{
                 }
             } , true);
             menuP.addSubMenuItem(menuPH);
-            for(MenuItem item: paquetes){
-                 addMenu(item);
+            for(int i = 0; i < paquetes.getTamaño(); i++){
+                addMenu((MenuItem) paquetes.getInfoNodo(i));
             }
         }
     }
     
     private MenuItem getMenuItem(String padre){
-        for(MenuItem item: paquetes){
+        for(int i = 0; i < paquetes.getTamaño(); i++){
+            MenuItem item = (MenuItem) paquetes.getInfoNodo(i);
             if(item.getNombreMenu().equals(padre)){
                 return item;
             }
         }
-        for(MenuItem item: subPaquetes){
+        for(int i = 0; i < subPaquetes.getTamaño(); i++){
+            MenuItem item = (MenuItem) subPaquetes.getInfoNodo(i);
             if(item.getNombreMenu().equals(padre)){
                 return item;
             }
