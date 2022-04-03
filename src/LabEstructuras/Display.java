@@ -57,7 +57,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         this.ymax = ymax;
         this.proyecto = proyecto;
         arbol = new Arbol();
-        arbol.raiz = new NodoArbol(proyecto);
+        arbol.raiz = new NodoArbol(proyecto,false);
         options = new ListaEnlazada();
         options.insertN("-");
         options.insertN(proyecto);
@@ -342,15 +342,23 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         if (ae.getSource() == btnimprimirReporte){
             int altura;
             
+            System.out.println("Recorrido en Preorden: ");
+            arbol.preorden(arbol.raiz);
+            
+            System.out.println("Recorrido en Inorden:");
+            arbol.Inorden(arbol.raiz);
+            
+            System.out.println("Recorrido en PostOrden:");
+            arbol.Inorden(arbol.raiz);
+            
             altura = arbol.AlturaArbol(arbol.raiz);
             System.out.println("Altura del árbol es: "+altura);
             
             System.out.print("Nodos Terminales: ");
             arbol.NodosTerminales(arbol.raiz);
-            
-            System.out.println("Recorrido en Inorden:");
-            arbol.Inorden(arbol.raiz);
-            
+            System.out.println("");
+            System.out.println("Nodos con solo un entregable: ");
+            arbol.NodoSoloUnEntregable(arbol.raiz);
            
         }
         
@@ -484,7 +492,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     private void agregarAlArbolPaquete(){
         options.insertN(paquetePadre + "~>" + txtNombrePaqueteNuevo.getText());
         findPaquetePadre();
-        arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, txtNombrePaqueteNuevo.getText());
+        arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, txtNombrePaqueteNuevo.getText(),false);
         numpaquetes++;
         
         if(paquetePadre.equals(proyecto)){
@@ -519,7 +527,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     
     private void agregarAlArbolEntregable(){
         findPaquetePadre();
-        arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, nombreArchivo);
+        arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, nombreArchivo,true);
         
         MenuItem menuP = getMenuItem(paquetePadre);
         if(menuP != null){
