@@ -8,6 +8,7 @@ package LabEstructuras;
 import java.awt.Toolkit;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,8 +20,9 @@ public class LabEstructura {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
-        JFrame display = new Display(1500, 1000, "EDT");
+        String proyecto;
+        proyecto = JOptionPane.showInputDialog("Ingresa el nombre del proyecto: ");
+        JFrame display = new Display(1500, 1000, proyecto);
         display.setDefaultCloseOperation(EXIT_ON_CLOSE);
         display.setSize(1500, 1000);
         display.setResizable(false);
