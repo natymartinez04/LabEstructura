@@ -11,7 +11,7 @@ package LabEstructuras;
  */
 public class Arbol {
     NodoArbol raiz;
-    int conta;
+
     
     public Arbol(){
         this.raiz = null;
@@ -63,18 +63,9 @@ public class Arbol {
             }
         }
     }
+    
     public void Inorden(NodoArbol raiz){
-        if (raiz.hijos.ptr == null){
-            System.out.print(" "+raiz.dato);
-        }else{
-            NodoLista p = raiz.hijos.ptr;
-            Inorden(p.nodoArbol);
-            System.out.print(" "+p.nodoArbol.dato);
-            while(p != null){
-                Inorden(p.nodoArbol);
-                p = p.link;
-            }
-        }
+        
     }
     
     public void preorden(NodoArbol raiz){
@@ -83,9 +74,32 @@ public class Arbol {
     public void postorden(NodoArbol raiz){
         
     }
+    
     public void NodoSoloUnEntregable(NodoArbol raiz){
-        
+        int conta = 0;
+
+        if (raiz != null){
+            if (raiz.hijos.ptr != null){
+                NodoLista p = raiz.hijos.ptr;
+                NodoLista k = p;
+                while(k != null){
+                    if (k.nodoArbol.tipo == true){
+                        conta ++;
+                    }
+                    k = k.link;
+                }
+                if (conta == 1){
+                    System.out.print(raiz.dato+" ");
+                    
+                }
+                conta = 0;
+                NodoSoloUnEntregable(p.nodoArbol);
+                p = p.link;
+            }
+        }
     }
+    
+
    
     
     
