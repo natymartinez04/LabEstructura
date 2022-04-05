@@ -14,17 +14,13 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Random;
-import java.util.Vector;
-import javax.swing.GroupLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 
 /**
@@ -88,7 +84,6 @@ public class MenuItem extends JPanel{
         
     }
     
-    
     private void initComponents(){
         showing = false;
         subMenu = new ListaEnlazada();
@@ -140,7 +135,7 @@ public class MenuItem extends JPanel{
     
     private void showMenu(){
         new Thread(() -> {
-            for(int i = 0; i < subMenu.getTamaño(); i++){
+            for(int i = 0; i < subMenu.getTamañoN(); i++){
                 pause();
                 MenuItem item = (MenuItem) subMenu.getInfoNodo(i);
                 item.setVisible(true);
@@ -158,7 +153,7 @@ public class MenuItem extends JPanel{
     
     private void hideMenu(){
         new Thread(() -> {
-            for(int i = subMenu.getTamaño() - 1; i >= 0; i--){
+            for(int i = subMenu.getTamañoN() - 1; i >= 0; i--){
                 pause();
                 MenuItem item = (MenuItem) subMenu.getInfoNodo(i);
                 item.setVisible(false);

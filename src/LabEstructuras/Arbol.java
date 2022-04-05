@@ -10,13 +10,19 @@ package LabEstructuras;
  * @author tllach, nmartinez, dkaty
  */
 public class Arbol {
-    NodoArbol raiz;
-
     
+    NodoArbol raiz;
+    String cadenaInorder;
+    String cadenaPreOrder;
+    String cadenaPostOrder;
+    String cadenaNodosTerminales;
+    String cadenaAltura;
+    String cadenaNodoSoloEntregables;
+
     public Arbol(){
         this.raiz = null;
+        cadenaInorder = "";
     }
-    
     
     public Boolean Existe(NodoArbol raiz, String dato){
         Boolean encontrado = false;
@@ -50,29 +56,17 @@ public class Arbol {
     
     public void NodosTerminales (NodoArbol raiz){
         if (raiz.hijos.ptr == null){
-            System.out.print(raiz.dato+" ");
+            cadenaNodosTerminales = cadenaNodosTerminales.concat(raiz.dato + " ");
         }else{
             NodoLista p = raiz.hijos.ptr;
             while(p != null){
                 if (p.nodoArbol.hijos == null){
-                    System.out.print(p.nodoArbol.dato+" ");
-                    
+                    cadenaNodosTerminales = cadenaNodosTerminales.concat(p.nodoArbol.dato + " ");
                 }
                 NodosTerminales(p.nodoArbol);
                 p = p.link;
             }
         }
-    }
-    
-    public void Inorden(NodoArbol raiz){
-        
-    }
-    
-    public void preorden(NodoArbol raiz){
-        
-    }
-    public void postorden(NodoArbol raiz){
-        
     }
     
     public void NodoSoloUnEntregable(NodoArbol raiz){
@@ -89,8 +83,7 @@ public class Arbol {
                     k = k.link;
                 }
                 if (conta == 1){
-                    System.out.print(raiz.dato+" ");
-                    
+                    cadenaNodoSoloEntregables = cadenaNodoSoloEntregables.concat(raiz.dato + " ");
                 }
                 conta = 0;
                 NodoSoloUnEntregable(p.nodoArbol);
@@ -99,10 +92,117 @@ public class Arbol {
         }
     }
     
+    public void recorridoPreorden(NodoArbol raiz){
+        cadenaPreOrder = cadenaPreOrder.concat((String) raiz.dato + " ");
+        if(raiz.hijos.ptr != null){
+            for(int i = 0; i < raiz.hijos.getTamaño(); i++){
+                recorridoPreorden((NodoArbol) raiz.hijos.getNodoArbol(i));
+            }
+        }
+    }
+    
+    public void recorridoInorden(NodoArbol raiz){
+        if(raiz.hijos != null){
+            
+            ListaEnlazada izq = dividir(raiz.hijos)[0];
+            ListaEnlazada der = dividir(raiz.hijos)[1];
+            
+            if(izq.getTamaño() != 0){
+                for(int i = 0; i < izq.getTamaño(); i++){
+                    recorridoInorden((NodoArbol) izq.getNodoArbol(i));
+                }
+                cadenaInorder = cadenaInorder.concat((String) raiz.dato + " ");
+                if(der.getTamaño() != 0){
+                    for(int i = 0; i < der.getTamaño(); i++){
+                        recorridoInorden((NodoArbol) der.getNodoArbol(i));
+                    }
+                } 
+            } 
+        }
+        if(!cadenaInorder.contains((String) raiz.dato)){
+            cadenaInorder = cadenaInorder.concat((String) raiz.dato + " ");
+        }
+    }
+    
+    public ListaEnlazada[] dividir(ListaEnlazada lista){
+        int tam = lista.getTamaño();
+        int tamL = Math.round(tam / 2);
+        if(tamL == 0){
+            tamL = 1;
+        }
+        ListaEnlazada a = new ListaEnlazada();
+        ListaEnlazada b = new ListaEnlazada();
+        NodoLista p = lista.ptr;
+        int ite = 0;
+        if(tam % 2 == 0){
+            while(p != null){
+                if(ite < tamL){
+                    a.insert(p.nodoArbol);
+                }else{
+                    b.insert(p.nodoArbol);
+                }
+                p = p.link;
+                ite++;
+            }
+        }else{
+            while(p != null){
+                if(ite < tamL){
+                    a.insert(p.nodoArbol);
+                }else{
+                    b.insert(p.nodoArbol);
+                }
+                p = p.link;
+                ite++;
+            }
+        }
+        return new ListaEnlazada[]{a,b};
+    }
+    
+    public void recorridoPostOrden(NodoArbol raiz){
+        if(raiz.hijos.ptr != null){
+            for(int i = 0; i < raiz.hijos.getTamaño(); i++){
+                recorridoPostOrden((NodoArbol) raiz.hijos.getNodoArbol(i));
+            }  
+        }
+        cadenaPostOrder = cadenaPostOrder.concat((String) raiz.dato +  " ");
+    }
+    
+    public void setCadenaAltura(String cadenaAltura) {
+        this.cadenaAltura = cadenaAltura;
+    }
+    
+    public void resetCadenas(){
+        cadenaInorder = "";
+        cadenaPreOrder = "";
+        cadenaPostOrder = "";
+        cadenaNodosTerminales = "";
+        cadenaAltura = "";
+        cadenaNodoSoloEntregables = "";
+    }
+    
+    public String getCadenaInorder() {
+        return cadenaInorder;
+    }
 
-   
-    
-    
+    public String getCadenaPreOrder() {
+        return cadenaPreOrder;
+    }
+
+    public String getCadenaPostOrder() {
+        return cadenaPostOrder;
+    }
+
+    public String getCadenaNodosTerminales() {
+        return cadenaNodosTerminales;
+    }
+
+    public String getCadenaAltura() {
+        return cadenaAltura;
+    }
+
+    public String getCadenaNodoSoloEntregables() {
+        return cadenaNodoSoloEntregables;
+    }
     
 }
 

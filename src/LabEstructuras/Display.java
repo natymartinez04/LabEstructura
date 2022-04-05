@@ -230,7 +230,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
             panelScrollMenu.remove(item);
             panelScrollMenu.add(item);
             ListaEnlazada subMenu = item.getSubMenu();
-            for(int i = 0; i < subMenu.getTamaño(); i++){
+            for(int i = 0; i < subMenu.getTamañoN(); i++){
                 MenuItem m = (MenuItem) subMenu.getInfoNodo(i);
                 addMenu(m);
             }
@@ -252,7 +252,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         
         selectorPaquete.setVisible(true);
         
-        for(int i = 0; i < options.getTamaño(); i++){
+        for(int i = 0; i < options.getTamañoN(); i++){
             selectorPaquete.addItem((String) options.getInfoNodo(i));
         }
         
@@ -291,7 +291,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         
         selectorPaquete.setVisible(true);
         
-        for(int i = 0; i < options.getTamaño(); i++){
+        for(int i = 0; i < options.getTamañoN(); i++){
             selectorPaquete.addItem((String) options.getInfoNodo(i));
         }
         
@@ -340,26 +340,8 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         }
         
         if (ae.getSource() == btnimprimirReporte){
-            int altura;
-            
-            System.out.println("Recorrido en Preorden: ");
-            arbol.preorden(arbol.raiz);
-            
-            System.out.println("Recorrido en Inorden:");
-            arbol.Inorden(arbol.raiz);
-            
-            System.out.println("Recorrido en PostOrden:");
-            arbol.Inorden(arbol.raiz);
-            
-            altura = arbol.AlturaArbol(arbol.raiz);
-            System.out.println("Altura del árbol es: "+altura);
-            
-            System.out.print("Nodos Terminales: ");
-            arbol.NodosTerminales(arbol.raiz);
-            System.out.println("");
-            System.out.println("Nodos con solo un entregable: ");
-            arbol.NodoSoloUnEntregable(arbol.raiz);
-           
+            crearReporte();
+            showReporte();
         }
         
         if(ae.getSource() == btnFileChooser){
@@ -399,6 +381,96 @@ public class Display extends JFrame implements ItemListener, ActionListener{
                 }
             }
         }    
+    }
+    
+    private void crearReporte(){
+        int altura;
+        arbol.resetCadenas();
+        
+        arbol.recorridoPreorden(arbol.raiz);
+        arbol.recorridoInorden(arbol.raiz);
+        arbol.recorridoPostOrden(arbol.raiz);
+        
+        altura = arbol.AlturaArbol(arbol.raiz);
+        arbol.setCadenaAltura(String.valueOf(altura)); 
+        arbol.NodosTerminales(arbol.raiz);
+        arbol.NodoSoloUnEntregable(arbol.raiz);
+    }
+    
+    private void showReporte(){
+        System.out.println("La Altura Del Arbol es: " + arbol.getCadenaAltura());
+        System.out.println("Nodos Terminales " +  arbol.getCadenaNodosTerminales());
+        System.out.println("Nodos con solo un entregable: " + arbol.getCadenaNodoSoloEntregables());
+        
+        JFrame frame = new JFrame("Reporte");
+        frame.setSize(800, 500);
+        frame.setResizable(false);
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
+        JPanel panel = new JPanel();
+        
+        frame.add(panel);
+        
+        panel.setLayout(null);
+        panel.setSize(800, 500);
+        panel.setBackground(Color.BLACK);
+        
+        JLabel lblTitle = new JLabel("REPORTE");
+        JLabel lblTitlePre = new JLabel("Recorrido PreOrden:");
+        JLabel lblPre = new JLabel(arbol.getCadenaPreOrder());
+        JLabel lblTitleIn = new JLabel("Recorrido InOrden:");
+        JLabel lblIn = new JLabel(arbol.getCadenaInorder());
+        JLabel lblTitlePost = new JLabel("Recorrido PostOrden:");
+        JLabel lblPost = new JLabel(arbol.getCadenaPostOrder());
+        
+        lblTitle.setFont(new Font("Times", Font.BOLD, 30));
+        lblTitle.setSize(200, 30);
+        lblTitle.setForeground(Color.white);
+        lblTitle.setLocation(300, 20);
+        
+        lblTitlePre.setFont(new Font("Times", Font.CENTER_BASELINE, 20));
+        lblTitlePre.setSize(200, 30);
+        lblTitlePre.setForeground(Color.ORANGE);
+        lblTitlePre.setLocation(80, lblTitle.getY() + 70);
+        
+        lblPre.setFont(new Font("Times", Font.CENTER_BASELINE, 18));
+        lblPre.setSize(400, 30);
+        lblPre.setForeground(Color.LIGHT_GRAY);
+        lblPre.setLocation(lblTitlePre.getX(), lblTitlePre.getY() + 40);
+        
+        lblTitleIn.setFont(new Font("Times", Font.CENTER_BASELINE, 20));
+        lblTitleIn.setSize(200, 30);
+        lblTitleIn.setForeground(Color.ORANGE);
+        lblTitleIn.setLocation(lblPre.getX(), lblPre.getY() + 50);
+        
+        lblIn.setFont(new Font("Times", Font.CENTER_BASELINE, lblPre.getFont().getSize()));
+        lblIn.setSize(400, 30);
+        lblIn.setForeground(Color.LIGHT_GRAY);
+        lblIn.setLocation(lblTitleIn.getX(), lblTitleIn.getY() + 40);
+        
+        lblTitlePost.setFont(new Font("Times", Font.CENTER_BASELINE, 20));
+        lblTitlePost.setSize(280, 30);
+        lblTitlePost.setForeground(Color.ORANGE);
+        lblTitlePost.setLocation(lblIn.getX(), lblIn.getY() + 50);
+        
+        lblPost.setFont(new Font("Times", Font.CENTER_BASELINE, lblPre.getFont().getSize()));
+        lblPost.setSize(400, 30);
+        lblPost.setForeground(Color.LIGHT_GRAY);
+        lblPost.setLocation(lblTitlePost.getX(), lblTitlePost.getY() + 40);
+        
+        panel.add(lblTitle);
+        panel.add(lblTitlePre);
+        panel.add(lblPre);
+        panel.add(lblTitleIn);
+        panel.add(lblIn);
+        panel.add(lblTitlePost);
+        panel.add(lblPost);
+        try{
+            add(frame);
+        }catch(Exception e){
+            
+        }
+       
     }
     
     private void creacionArchivo(){
@@ -498,7 +570,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         if(paquetePadre.equals(proyecto)){
             MenuItem menuP = new MenuItem(iconPaquete, txtNombrePaqueteNuevo.getText(), null, false);
             paquetes.insertN(menuP);
-            for(int i = 0; i < paquetes.getTamaño(); i++){
+            for(int i = 0; i < paquetes.getTamañoN(); i++){
                 MenuItem item = (MenuItem) paquetes.getInfoNodo(i);
                 addMenu(item);
             }
@@ -508,7 +580,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
                 MenuItem menuPH = new MenuItem(iconPaquete, txtNombrePaqueteNuevo.getText(), null, false);
                 subPaquetes.insertN(menuPH);
                 menuP.addSubMenuItem(menuPH);
-                for(int i = 0; i < paquetes.getTamaño(); i++){
+                for(int i = 0; i < paquetes.getTamañoN(); i++){
                     MenuItem item = (MenuItem) paquetes.getInfoNodo(i);
                     addMenu(item);
                 }
@@ -517,7 +589,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         
         selectorPaquete.removeAllItems();
         
-        for(int i = 0; i < options.getTamaño(); i++){
+        for(int i = 0; i < options.getTamañoN(); i++){
             selectorPaquete.addItem((String) options.getInfoNodo(i));
         }
 
@@ -538,20 +610,20 @@ public class Display extends JFrame implements ItemListener, ActionListener{
                 }
             } , true);
             menuP.addSubMenuItem(menuPH);
-            for(int i = 0; i < paquetes.getTamaño(); i++){
+            for(int i = 0; i < paquetes.getTamañoN(); i++){
                 addMenu((MenuItem) paquetes.getInfoNodo(i));
             }
         }
     }
     
     private MenuItem getMenuItem(String padre){
-        for(int i = 0; i < paquetes.getTamaño(); i++){
+        for(int i = 0; i < paquetes.getTamañoN(); i++){
             MenuItem item = (MenuItem) paquetes.getInfoNodo(i);
             if(item.getNombreMenu().equals(padre)){
                 return item;
             }
         }
-        for(int i = 0; i < subPaquetes.getTamaño(); i++){
+        for(int i = 0; i < subPaquetes.getTamañoN(); i++){
             MenuItem item = (MenuItem) subPaquetes.getInfoNodo(i);
             if(item.getNombreMenu().equals(padre)){
                 return item;

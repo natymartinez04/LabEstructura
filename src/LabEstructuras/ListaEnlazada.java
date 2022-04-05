@@ -10,7 +10,6 @@ public class ListaEnlazada {
     NodoLista ptr;
     Nodo ptrN;
     NodoLista link;
-    int tam = 0;
     
     public ListaEnlazada() {
         this.ptr = null;
@@ -41,7 +40,8 @@ public class ListaEnlazada {
         } 
     }
     
-    public int getTamaño(){
+    //devuelve tamaño de la lista con nodos "Nodo"
+    public int getTamañoN(){
         int c = 0;
         Nodo actual = ptrN;
         while(actual != null){
@@ -49,6 +49,17 @@ public class ListaEnlazada {
             actual = actual.link;
         }
         return c;
+    }
+    
+    //devuelve tamaño de la lista con nodos "NodoLista"
+    public int getTamaño(){
+        int i = 0;
+        NodoLista p = ptr;
+        while(p != null){
+            i++;
+            p = p.link;
+        }
+        return i;
     }
     
     public Object getInfoNodo(int i){
@@ -64,30 +75,28 @@ public class ListaEnlazada {
         return null;
     }
     
-    public void InsertaEnPadreCorrecto(NodoArbol raiz, String datoPadre, String datoHijo){
+    public void InsertaEnPadreCorrecto(NodoArbol raiz, String datoPadre, String datoHijo, Boolean tipo){
         NodoLista a = raiz.hijos.ptr;
         if (raiz.dato.equals(datoPadre)){
-            System.out.println("El padre es: " + raiz.dato);
-            raiz.hijos.insert(new NodoArbol(datoHijo));
+            raiz.hijos.insert(new NodoArbol(datoHijo, tipo));
         }else{
             while (a != null){
                 if (a.nodoArbol.dato.equals(datoPadre)){
-                    System.out.println("El padre es: " + a.nodoArbol.dato);
-                    a.nodoArbol.hijos.insert(new NodoArbol(datoHijo));
+                    a.nodoArbol.hijos.insert(new NodoArbol(datoHijo, tipo));
                 }else{
-                    InsertaEnPadreCorrecto(a.nodoArbol, datoPadre, datoHijo);
+                    InsertaEnPadreCorrecto(a.nodoArbol, datoPadre, datoHijo, tipo);
                 }
                 a = a.link;
             }
         }
     }
 
-    public Object getNodo(int i) {
-        Nodo p = ptrN;
+    public NodoArbol getNodoArbol(int i) {
+        NodoLista p = ptr;
         int index = 0;
         while(p != null){
             if(index == i){
-                return p;
+                return p.nodoArbol;
             }
             p = p.link;
             index++;
