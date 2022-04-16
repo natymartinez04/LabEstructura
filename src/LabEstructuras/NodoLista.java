@@ -5,6 +5,8 @@
  */
 package LabEstructuras;
 
+import LabEstructuras.Arbol.NodoArbol;
+
 /**
  *
  * @author tllach, nmartinez, dkaty
@@ -18,5 +20,11 @@ public class NodoLista {
         this.nodoArbol = dato;
     }
 
+    public NodoArbol getNodoArbol(){
+        return nodoArbol;
+    }
     
+    public NodoLista getLink(){
+        return link;
+    }
 }

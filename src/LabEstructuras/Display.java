@@ -2,6 +2,8 @@ package LabEstructuras;
 
 
 
+import LabEstructuras.Arbol.NodoArbol;
+import LabEstructuras.Arbol.Arbol;
 import Menu.MenuItem;
 import java.awt.Color;
 import java.awt.Container;
@@ -56,7 +58,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         this.ymax = ymax;
         this.proyecto = proyecto;
         arbol = new Arbol();
-        arbol.raiz = new NodoArbol(proyecto,false);
+        arbol.setRaiz(new NodoArbol(proyecto,false));
         options = new ListaEnlazada();
         options.insertN("-");
         options.insertN(proyecto);
@@ -327,7 +329,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         
         if(ae.getSource() == btnGuardar){
             //check si el paquete ya existe en el arbol
-            if (arbol.Existe(arbol.raiz, txtNombrePaqueteNuevo.getText())){
+            if (arbol.Existe(arbol.getRaiz(), txtNombrePaqueteNuevo.getText())){
                 JOptionPane.showMessageDialog(null, "Este paquete ya existe");
             }else{
                 if(!isBadInput()){
@@ -367,7 +369,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         }
 
         if(ae.getSource() == btnGuardarEntregable){
-            if (arbol.Existe(arbol.raiz, nombreArchivo)){
+            if (arbol.Existe(arbol.getRaiz(), nombreArchivo)){
                 JOptionPane.showMessageDialog(null, "Ya existe un entregable con ese nombre");
             }else{
                 if(!isBadInput()){
@@ -386,14 +388,14 @@ public class Display extends JFrame implements ItemListener, ActionListener{
         int altura;
         arbol.resetCadenas();
         
-        arbol.recorridoPreorden(arbol.raiz);
-        arbol.recorridoInorden(arbol.raiz);
-        arbol.recorridoPostOrden(arbol.raiz);
+        arbol.recorridoPreorden(arbol.getRaiz());
+        arbol.recorridoInorden(arbol.getRaiz());
+        arbol.recorridoPostOrden(arbol.getRaiz());
         
-        altura = arbol.AlturaArbol(arbol.raiz);
+        altura = arbol.AlturaArbol(arbol.getRaiz());
         arbol.setCadenaAltura(String.valueOf(altura)); 
-        arbol.NodosTerminales(arbol.raiz);
-        arbol.NodoSoloUnEntregable(arbol.raiz);
+        arbol.NodosTerminales(arbol.getRaiz());
+        arbol.NodoSoloUnEntregable(arbol.getRaiz());
     }
     
     private void showReporte(){
@@ -563,7 +565,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     private void agregarAlArbolPaquete(){
         options.insertN(paquetePadre + "~>" + txtNombrePaqueteNuevo.getText());
         findPaquetePadre();
-        arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, txtNombrePaqueteNuevo.getText(),false);
+        arbol.getRaiz().getHijos().InsertaEnPadreCorrecto(arbol.getRaiz(), paquetePadre, txtNombrePaqueteNuevo.getText(),false);
         numpaquetes++;
         
         if(paquetePadre.equals(proyecto)){
@@ -598,7 +600,7 @@ public class Display extends JFrame implements ItemListener, ActionListener{
     
     private void agregarAlArbolEntregable(){
         findPaquetePadre();
-        arbol.raiz.hijos.InsertaEnPadreCorrecto(arbol.raiz, paquetePadre, nombreArchivo,true);
+        arbol.getRaiz().getHijos().InsertaEnPadreCorrecto(arbol.getRaiz(), paquetePadre, nombreArchivo,true);
         
         MenuItem menuP = getMenuItem(paquetePadre);
         if(menuP != null){

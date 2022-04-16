@@ -1,15 +1,17 @@
 
 package LabEstructuras;
 
+import LabEstructuras.Arbol.NodoArbol;
+
 /**
  *
  * @author tllach, nmartinez, dkaty
  */
 public class ListaEnlazada {
     
-    NodoLista ptr;
-    Nodo ptrN;
-    NodoLista link;
+    private NodoLista ptr;
+    private Nodo ptrN;
+    private NodoLista link;
     
     public ListaEnlazada() {
         this.ptr = null;
@@ -76,13 +78,13 @@ public class ListaEnlazada {
     }
     
     public void InsertaEnPadreCorrecto(NodoArbol raiz, String datoPadre, String datoHijo, Boolean tipo){
-        NodoLista a = raiz.hijos.ptr;
-        if (raiz.dato.equals(datoPadre)){
-            raiz.hijos.insert(new NodoArbol(datoHijo, tipo));
+        NodoLista a = raiz.getHijos().getPtr();
+        if (raiz.getDato().equals(datoPadre)){
+            raiz.getHijos().insert(new NodoArbol(datoHijo, tipo));
         }else{
             while (a != null){
-                if (a.nodoArbol.dato.equals(datoPadre)){
-                    a.nodoArbol.hijos.insert(new NodoArbol(datoHijo, tipo));
+                if (a.nodoArbol.getDato().equals(datoPadre)){
+                    a.nodoArbol.getHijos().insert(new NodoArbol(datoHijo, tipo));
                 }else{
                     InsertaEnPadreCorrecto(a.nodoArbol, datoPadre, datoHijo, tipo);
                 }
@@ -103,4 +105,13 @@ public class ListaEnlazada {
         }
         return null;
     }
+    
+    public NodoLista getPtr(){
+        return ptr;
+    }
+    
+    public Nodo getPtrN(){
+        return ptrN;
+    }
+    
 }

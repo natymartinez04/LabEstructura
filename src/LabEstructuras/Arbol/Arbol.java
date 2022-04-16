@@ -3,7 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package LabEstructuras;
+package LabEstructuras.Arbol;
+
+import LabEstructuras.ListaEnlazada;
+import LabEstructuras.NodoLista;
 
 /**
  *
@@ -11,13 +14,13 @@ package LabEstructuras;
  */
 public class Arbol {
     
-    NodoArbol raiz;
-    String cadenaInorder;
-    String cadenaPreOrder;
-    String cadenaPostOrder;
-    String cadenaNodosTerminales;
-    String cadenaAltura;
-    String cadenaNodoSoloEntregables;
+    private NodoArbol raiz;
+    private String cadenaInorder;
+    private String cadenaPreOrder;
+    private String cadenaPostOrder;
+    private String cadenaNodosTerminales;
+    private String cadenaAltura;
+    private String cadenaNodoSoloEntregables;
 
     public Arbol(){
         this.raiz = null;
@@ -26,16 +29,17 @@ public class Arbol {
     
     public Boolean Existe(NodoArbol raiz, String dato){
         Boolean encontrado = false;
-        if (raiz.dato.equals(dato)){
+        if (raiz.getDato().equals(dato)){
             encontrado = true;
         }else{
-            NodoLista p = raiz.hijos.ptr;
+            NodoLista p = raiz.getHijos().getPtr();
             while(p != null){
-                if (dato.equals(p.nodoArbol.dato)){
+                
+                if (dato.equals(p.getNodoArbol().getDato())){
                     encontrado = true;
                 }
-                Existe(p.nodoArbol, dato);
-                p = p.link;
+                Existe(p.getNodoArbol(), dato);
+                p = p.getLink();
             }
         }
         return encontrado;
@@ -46,25 +50,25 @@ public class Arbol {
             return -1;
         }
         int altura = -1;
-        NodoLista p = raiz.hijos.ptr;
+        NodoLista p = raiz.getHijos().getPtr();
         while (p != null){
-            altura = Math.max(altura, AlturaArbol(p.nodoArbol));
-            p = p.link;
+            altura = Math.max(altura, AlturaArbol(p.getNodoArbol()));
+            p = p.getLink();
         }    
         return altura +1;
     }
     
     public void NodosTerminales (NodoArbol raiz){
-        if (raiz.hijos.ptr == null){
-            cadenaNodosTerminales = cadenaNodosTerminales.concat(raiz.dato + " ");
+        if (raiz.getHijos().getPtr() == null){
+            cadenaNodosTerminales = cadenaNodosTerminales.concat(raiz.getDato() + " ");
         }else{
-            NodoLista p = raiz.hijos.ptr;
+            NodoLista p = raiz.getHijos().getPtr();
             while(p != null){
-                if (p.nodoArbol.hijos == null){
-                    cadenaNodosTerminales = cadenaNodosTerminales.concat(p.nodoArbol.dato + " ");
+                if (p.getNodoArbol().getHijos() == null){
+                    cadenaNodosTerminales = cadenaNodosTerminales.concat(p.getNodoArbol().getDato() + " ");
                 }
-                NodosTerminales(p.nodoArbol);
-                p = p.link;
+                NodosTerminales(p.getNodoArbol());
+                p = p.getLink();
             }
         }
     }
@@ -73,45 +77,45 @@ public class Arbol {
         int conta = 0;
 
         if (raiz != null){
-            if (raiz.hijos.ptr != null){
-                NodoLista p = raiz.hijos.ptr;
+            if (raiz.getHijos().getPtr() != null){
+                NodoLista p = raiz.getHijos().getPtr();
                 NodoLista k = p;
                 while(k != null){
-                    if (k.nodoArbol.tipo == true){
+                    if (k.getNodoArbol().getTipo() == true){
                         conta ++;
                     }
-                    k = k.link;
+                    k = k.getLink();
                 }
                 if (conta == 1){
-                    cadenaNodoSoloEntregables = cadenaNodoSoloEntregables.concat(raiz.dato + " ");
+                    cadenaNodoSoloEntregables = cadenaNodoSoloEntregables.concat(raiz.getDato() + " ");
                 }
                 conta = 0;
-                NodoSoloUnEntregable(p.nodoArbol);
-                p = p.link;
+                NodoSoloUnEntregable(p.getNodoArbol());
+                p = p.getLink();
             }
         }
     }
     
     public void recorridoPreorden(NodoArbol raiz){
-        cadenaPreOrder = cadenaPreOrder.concat((String) raiz.dato + " ");
-        if(raiz.hijos.ptr != null){
-            for(int i = 0; i < raiz.hijos.getTamaño(); i++){
-                recorridoPreorden((NodoArbol) raiz.hijos.getNodoArbol(i));
+        cadenaPreOrder = cadenaPreOrder.concat((String) raiz.getDato() + " ");
+        if(raiz.getHijos().getPtr() != null){
+            for(int i = 0; i < raiz.getHijos().getTamaño(); i++){
+                recorridoPreorden((NodoArbol) raiz.getHijos().getNodoArbol(i));
             }
         }
     }
     
     public void recorridoInorden(NodoArbol raiz){
-        if(raiz.hijos != null){
+        if(raiz.getHijos() != null){
             
-            ListaEnlazada izq = dividir(raiz.hijos)[0];
-            ListaEnlazada der = dividir(raiz.hijos)[1];
+            ListaEnlazada izq = dividir(raiz.getHijos())[0];
+            ListaEnlazada der = dividir(raiz.getHijos())[1];
             
             if(izq.getTamaño() != 0){
                 for(int i = 0; i < izq.getTamaño(); i++){
                     recorridoInorden((NodoArbol) izq.getNodoArbol(i));
                 }
-                cadenaInorder = cadenaInorder.concat((String) raiz.dato + " ");
+                cadenaInorder = cadenaInorder.concat((String) raiz.getDato() + " ");
                 if(der.getTamaño() != 0){
                     for(int i = 0; i < der.getTamaño(); i++){
                         recorridoInorden((NodoArbol) der.getNodoArbol(i));
@@ -119,8 +123,8 @@ public class Arbol {
                 } 
             } 
         }
-        if(!cadenaInorder.contains((String) raiz.dato)){
-            cadenaInorder = cadenaInorder.concat((String) raiz.dato + " ");
+        if(!cadenaInorder.contains((String) raiz.getDato())){
+            cadenaInorder = cadenaInorder.concat((String) raiz.getDato() + " ");
         }
     }
     
@@ -132,26 +136,26 @@ public class Arbol {
         }
         ListaEnlazada a = new ListaEnlazada();
         ListaEnlazada b = new ListaEnlazada();
-        NodoLista p = lista.ptr;
+        NodoLista p = lista.getPtr();
         int ite = 0;
         if(tam % 2 == 0){
             while(p != null){
                 if(ite < tamL){
-                    a.insert(p.nodoArbol);
+                    a.insert(p.getNodoArbol());
                 }else{
-                    b.insert(p.nodoArbol);
+                    b.insert(p.getNodoArbol());
                 }
-                p = p.link;
+                p = p.getLink();
                 ite++;
             }
         }else{
             while(p != null){
                 if(ite < tamL){
-                    a.insert(p.nodoArbol);
+                    a.insert(p.getNodoArbol());
                 }else{
-                    b.insert(p.nodoArbol);
+                    b.insert(p.getNodoArbol());
                 }
-                p = p.link;
+                p = p.getLink();
                 ite++;
             }
         }
@@ -159,12 +163,12 @@ public class Arbol {
     }
     
     public void recorridoPostOrden(NodoArbol raiz){
-        if(raiz.hijos.ptr != null){
-            for(int i = 0; i < raiz.hijos.getTamaño(); i++){
-                recorridoPostOrden((NodoArbol) raiz.hijos.getNodoArbol(i));
+        if(raiz.getHijos().getPtr() != null){
+            for(int i = 0; i < raiz.getHijos().getTamaño(); i++){
+                recorridoPostOrden((NodoArbol) raiz.getHijos().getNodoArbol(i));
             }  
         }
-        cadenaPostOrder = cadenaPostOrder.concat((String) raiz.dato +  " ");
+        cadenaPostOrder = cadenaPostOrder.concat((String) raiz.getDato() +  " ");
     }
     
     public void setCadenaAltura(String cadenaAltura) {
@@ -202,6 +206,14 @@ public class Arbol {
 
     public String getCadenaNodoSoloEntregables() {
         return cadenaNodoSoloEntregables;
+    }
+    
+    public NodoArbol getRaiz(){
+        return raiz;
+    }
+    
+    public void setRaiz(NodoArbol raiz){
+        this.raiz = raiz;
     }
     
 }

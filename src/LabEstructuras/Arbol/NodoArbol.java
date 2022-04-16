@@ -3,16 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package LabEstructuras;
+package LabEstructuras.Arbol;
+
+import LabEstructuras.ListaEnlazada;
 
 /**
  *
  * @author tllach, nmartinez, dkaty
  */
 public class NodoArbol {
-    Object dato;
-    ListaEnlazada hijos;
-    Boolean tipo;
+    
+    private Object dato;
+    private ListaEnlazada hijos;
+    private Boolean tipo;
     
     public NodoArbol(Object dato, Boolean tipo) {
         this.dato = dato;
@@ -20,6 +23,18 @@ public class NodoArbol {
         this.hijos = new ListaEnlazada();
     }
     
+    public Object getDato(){
+        return dato;
+    }
     
+    public ListaEnlazada getHijos(){
+        return hijos;
+    }
+    
+    public Boolean getTipo(){
+        return tipo;
+    }
+    
+
 }
 
