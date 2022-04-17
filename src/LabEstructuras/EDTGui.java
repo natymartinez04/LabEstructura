@@ -596,3 +596,4 @@ public class EDTGui implements ItemListener, ActionListener{
             }
         }
     }
+}
