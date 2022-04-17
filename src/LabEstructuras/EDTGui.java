@@ -1,4 +1,3 @@
-
 package LabEstructuras;
 
 import Menu.MenuItem;
@@ -147,7 +146,7 @@ public class EDTGui implements ItemListener, ActionListener{
         btnBackMain.setContentAreaFilled(false);
         btnBackMain.setBorder(BorderFactory.createEmptyBorder());
         btnBackMain.setSize(250, 80);
-        btnBackMain.setLocation(display.getxmax() - (btnBackMain.getWidth() + display.getxmax() / 20) , display.getymax() - (btnBackMain.getHeight() * 2));
+        btnBackMain.setLocation(display.getxmax() - (btnBackMain.getWidth() + display.getxmax() / 20) , display.getymax() - (btnBackMain.getHeight() * 4));
 
         display.addToContainer(panelMenu, panelHeader, lblSeleccionEDT, selectorOption, btnBackMain,btnimprimirReporte);
         
@@ -547,6 +546,14 @@ public class EDTGui implements ItemListener, ActionListener{
                 }
             }
         }
+        if (ae.getSource() == btnBackMain){
+            display.getContainer().removeAll();
+            display.getContainer().validate();
+            display.getContainer().repaint();
+            display.pantallaPrincipal();
+          
+        }
+        
         if (ae.getSource() == btnimprimirReporte){
             crearReporte();
             showReporte();
@@ -589,4 +596,3 @@ public class EDTGui implements ItemListener, ActionListener{
             }
         }
     }
-}
