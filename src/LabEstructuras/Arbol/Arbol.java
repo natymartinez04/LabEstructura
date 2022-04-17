@@ -21,10 +21,13 @@ public class Arbol {
     private String cadenaNodosTerminales;
     private String cadenaAltura;
     private String cadenaNodoSoloEntregables;
-
+    ListaEnlazada a;
+    
+    
     public Arbol(){
         this.raiz = null;
         cadenaInorder = "";
+        a = new ListaEnlazada();
     }
     
     public Boolean Existe(NodoArbol raiz, String dato){
@@ -57,6 +60,22 @@ public class Arbol {
         }    
         return altura +1;
     }
+    
+    public ListaEnlazada NodosEntregables (NodoArbol raiz){
+        if (raiz.getHijos() != null){
+            NodoLista p = raiz.getHijos().getPtr();
+            while(p != null){
+                if (p.getNodoArbol().getTipo() == true){
+                    a.insert(p.getNodoArbol());
+                }
+                NodosEntregables(p.getNodoArbol());
+                p = p.getLink();
+            }
+        }
+        return a;
+    }
+    
+    
     
     public void NodosTerminales (NodoArbol raiz){
         if (raiz.getHijos().getPtr() == null){
