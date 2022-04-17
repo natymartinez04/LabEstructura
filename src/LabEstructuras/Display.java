@@ -33,6 +33,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class Display extends JFrame implements ActionListener{
     
     private EDTGui edtGUI;
+    private CronogramaGui cronogramaGUI;
     
     private String nombreProyecto;
     private static String nombreObject;
@@ -40,7 +41,6 @@ public class Display extends JFrame implements ActionListener{
     private Boolean inEntregable, inPaquete;
     private Arbol arbol;
     private Container container;
-    private JButton btnBackMain;
     private JButton btnEDT, btnCronograma, btnGuardarPaquete, btnGuardarArchivo, btnFileChooser, btnGuardarEntregable, btnimprimirReporte;
     private JLabel lblPrincipal, lblEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion, lblNombreArchivo, imagen,imagen2;
     private JComboBox selectorOption, selectorPaquete;
@@ -49,14 +49,15 @@ public class Display extends JFrame implements ActionListener{
     private JScrollPane scrollMenu, scrollPanelArchivo;
     private ImageIcon iconPaquete, iconFile;
     private ListaEnlazada options;
-    private ListaEnlazada paquetes, subPaquetes;
+    private ListaEnlazada paquetes, subPaquetes,listaEntregables;
     private File fileChoose;
     
     
-    public Display(int xmax, int ymax, String proyecto){
+    public Display(int xmax, int ymax, String proyecto,ListaEnlazada listaEntregables){
         this.xmax = xmax;
         this.ymax = ymax;
         this.nombreProyecto = proyecto;
+        this.listaEntregables = listaEntregables;
         declaracion();
         pantallaPrincipal(); 
     }
@@ -69,12 +70,14 @@ public class Display extends JFrame implements ActionListener{
         btnEDT = new JButton();
         btnCronograma = new JButton();
         edtGUI = new EDTGui(this);
+        cronogramaGUI = new CronogramaGui(this);
         imagen = new JLabel();
         imagen2 = new JLabel();
         btnEDT.addActionListener(this);
+        btnCronograma.addActionListener(this);
     }
     
-    private void pantallaPrincipal(){
+    public void pantallaPrincipal(){
         container.setLayout(null);
         container.setBackground(new Color(41, 96, 137));
         
@@ -113,6 +116,14 @@ public class Display extends JFrame implements ActionListener{
             container.repaint();
             edtGUI.setupEDT();
         }
+        if (ae.getSource() == btnCronograma){
+            removeOfContainer(lblPrincipal, btnEDT, btnCronograma,imagen,imagen2);
+            container.validate();
+            container.repaint();
+            listaEntregables = arbol.NodosEntregables(arbol.getRaiz());
+            cronogramaGUI.setUpCronograma(listaEntregables);
+        }
+
     }
 
     public void addToContainer(JComponent ...objs) {
@@ -121,7 +132,7 @@ public class Display extends JFrame implements ActionListener{
         }
     }   
     
-    private void removeOfContainer(JComponent ...objs) {
+    void removeOfContainer(JComponent ...objs) {
         for(JComponent obj : objs) {
             container.remove(obj);
         }
