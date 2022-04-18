@@ -38,22 +38,14 @@ public class Display extends JFrame implements ActionListener{
     private String nombreProyecto;
     private static String nombreObject;
     private int xmax, ymax;
-    private Boolean inEntregable, inPaquete;
     private Arbol arbol;
     private Container container;
-    private JButton btnEDT, btnCronograma, btnGuardarPaquete, btnGuardarArchivo, btnFileChooser, btnGuardarEntregable, btnimprimirReporte;
-    private JLabel lblPrincipal, lblEDT, lblNombrePaquete, lblSeleccionEDT, lblUbicacion, lblNombreArchivo, imagen,imagen2;
-    private JComboBox selectorOption, selectorPaquete;
-    private JTextField txtNombrePaqueteNuevo;
-    private JFileChooser archivoEntregable;
-    private JScrollPane scrollMenu, scrollPanelArchivo;
-    private ImageIcon iconPaquete, iconFile;
-    private ListaEnlazada options;
-    private ListaEnlazada paquetes, subPaquetes,listaEntregables;
-    private File fileChoose;
+    private JButton btnEDT, btnCronograma;
+    private JLabel lblPrincipal,  imagen, imagen2;
+    private ListaEnlazada listaEntregables;
     
     
-    public Display(int xmax, int ymax, String proyecto,ListaEnlazada listaEntregables){
+    public Display(int xmax, int ymax, String proyecto, ListaEnlazada listaEntregables){
         this.xmax = xmax;
         this.ymax = ymax;
         this.nombreProyecto = proyecto;
@@ -111,19 +103,18 @@ public class Display extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent ae) {
         if(ae.getSource() == btnEDT){
-            removeOfContainer(lblPrincipal, btnEDT, btnCronograma,imagen,imagen2);
+            removeOfContainer(lblPrincipal, btnEDT, btnCronograma, imagen, imagen2);
             container.validate();
             container.repaint();
             edtGUI.setupEDT();
         }
         if (ae.getSource() == btnCronograma){
-            removeOfContainer(lblPrincipal, btnEDT, btnCronograma,imagen,imagen2);
+            removeOfContainer(lblPrincipal, btnEDT, btnCronograma, imagen, imagen2);
             container.validate();
             container.repaint();
             listaEntregables = arbol.NodosEntregables(arbol.getRaiz());
             cronogramaGUI.setUpCronograma(listaEntregables);
         }
-
     }
 
     public void addToContainer(JComponent ...objs) {
@@ -132,7 +123,7 @@ public class Display extends JFrame implements ActionListener{
         }
     }   
     
-    void removeOfContainer(JComponent ...objs) {
+    public void removeOfContainer(JComponent ...objs) {
         for(JComponent obj : objs) {
             container.remove(obj);
         }
@@ -146,11 +137,11 @@ public class Display extends JFrame implements ActionListener{
         return container;
     }
     
-    public int getxmax(){
+    public int getXmax(){
         return xmax;
     }
     
-    public int getymax(){
+    public int getYmax(){
         return ymax;
     }
     

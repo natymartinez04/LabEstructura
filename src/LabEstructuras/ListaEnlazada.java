@@ -22,11 +22,10 @@ public class ListaEnlazada {
             ptr = new NodoLista(n);
         }else{
             NodoLista p = ptr;
-            while (p.link != null){
-                p = p.link;
+            while (p.getLink() != null){
+                p = p.getLink();
             }
-            p.link = new NodoLista(n);
-            
+            p.setLink(new NodoLista(n));
         } 
     }
 
@@ -59,7 +58,7 @@ public class ListaEnlazada {
         NodoLista p = ptr;
         while(p != null){
             i++;
-            p = p.link;
+            p = p.getLink();
         }
         return i;
     }
@@ -83,12 +82,12 @@ public class ListaEnlazada {
             raiz.getHijos().insert(new NodoArbol(datoHijo, tipo));
         }else{
             while (a != null){
-                if (a.nodoArbol.getDato().equals(datoPadre)){
-                    a.nodoArbol.getHijos().insert(new NodoArbol(datoHijo, tipo));
+                if (a.getNodoArbol().getDato().equals(datoPadre)){
+                    a.getNodoArbol().getHijos().insert(new NodoArbol(datoHijo, tipo));
                 }else{
-                    InsertaEnPadreCorrecto(a.nodoArbol, datoPadre, datoHijo, tipo);
+                    InsertaEnPadreCorrecto(a.getNodoArbol(), datoPadre, datoHijo, tipo);
                 }
-                a = a.link;
+                a = a.getLink();
             }
         }
     }
@@ -98,9 +97,9 @@ public class ListaEnlazada {
         int index = 0;
         while(p != null){
             if(index == i){
-                return p.nodoArbol;
+                return p.getNodoArbol();
             }
-            p = p.link;
+            p = p.getLink();
             index++;
         }
         return null;

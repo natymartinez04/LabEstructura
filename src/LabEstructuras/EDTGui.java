@@ -20,7 +20,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
- * @author nmartinez, tllach, dkaty
+ * @author dkaty, nmartinez, tllach
  * 
  */
 public class EDTGui implements ItemListener, ActionListener{
@@ -99,10 +99,10 @@ public class EDTGui implements ItemListener, ActionListener{
         btnimprimirReporte.setSize(300,100);
         btnimprimirReporte.setLocation(1150,750);
         
-        panelHeader.setBounds(0,0, display.getxmax(), display.getymax() / 11);
+        panelHeader.setBounds(0,0, display.getXmax(), display.getYmax() / 11);
         panelHeader.setBackground(new Color(99,38,38));
         
-        panelMenu.setSize(new Dimension(display.getxmax() / 2 - (display.getxmax() / 7), display.getymax() - (panelHeader.getHeight() + 40)));
+        panelMenu.setSize(new Dimension(display.getXmax() / 2 - (display.getXmax() / 7), display.getYmax() - (panelHeader.getHeight() + 40)));
         panelMenu.setLocation(0, panelHeader.getHeight());
         
         scrollMenu.setBorder(null);
@@ -115,11 +115,11 @@ public class EDTGui implements ItemListener, ActionListener{
         panelMenu.setLayout(panelMenuLayout);
         panelMenuLayout.setHorizontalGroup(
             panelMenuLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(scrollMenu, GroupLayout.DEFAULT_SIZE, display.getxmax() / 2 - (display.getxmax() / 7), Short.MAX_VALUE)
+            .addComponent(scrollMenu, GroupLayout.DEFAULT_SIZE, display.getXmax() / 2 - (display.getXmax() / 7), Short.MAX_VALUE)
         );
         panelMenuLayout.setVerticalGroup(
             panelMenuLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(scrollMenu, GroupLayout.DEFAULT_SIZE, display.getymax() - (panelHeader.getHeight() + 40), Short.MAX_VALUE)
+            .addComponent(scrollMenu, GroupLayout.DEFAULT_SIZE, display.getYmax() - (panelHeader.getHeight() + 40), Short.MAX_VALUE)
         );
         
         
@@ -127,7 +127,7 @@ public class EDTGui implements ItemListener, ActionListener{
         lblEDT.setFont(new Font("Monospaced", Font.CENTER_BASELINE, 60));
         lblEDT.setSize(110, 60);
         lblEDT.setForeground(Color.LIGHT_GRAY);
-        lblEDT.setLocation((display.getxmax() - lblEDT.getWidth())/2 , 25);
+        lblEDT.setLocation((display.getXmax() - lblEDT.getWidth())/2 , 25);
         
         panelHeader.add(lblEDT);
         
@@ -137,16 +137,19 @@ public class EDTGui implements ItemListener, ActionListener{
         lblSeleccionEDT.setBounds(lblEDT.getX() - 105 , lblEDT.getY() + 245, 350, 40);
         
         selectorOption.setVisible(true);
-        selectorOption.addItem("-");
-        selectorOption.addItem("Agregar Paquete");
-        selectorOption.addItem("Agregar Entregable");
+        if(selectorOption.getItemCount() == 0){
+            selectorOption.addItem("-");
+            selectorOption.addItem("Agregar Paquete");
+            selectorOption.addItem("Agregar Entregable");
+        }
         selectorOption.setBounds(lblSeleccionEDT.getX() + 60, lblSeleccionEDT.getY() + 60, 400, 40);
+        selectorOption.setSelectedIndex(0);
         
         btnBackMain.setIcon(new ImageIcon(getClass().getResource("/Images/button_regresar.png")));
         btnBackMain.setContentAreaFilled(false);
         btnBackMain.setBorder(BorderFactory.createEmptyBorder());
         btnBackMain.setSize(250, 80);
-        btnBackMain.setLocation(display.getxmax() - (btnBackMain.getWidth() + display.getxmax() / 20) , display.getymax() - (btnBackMain.getHeight() * 4));
+        btnBackMain.setLocation(display.getXmax() - (btnBackMain.getWidth() + display.getXmax() / 20) , display.getYmax() - (btnBackMain.getHeight() * 4));
 
         display.addToContainer(panelMenu, panelHeader, lblSeleccionEDT, selectorOption, btnBackMain,btnimprimirReporte);
         
@@ -477,8 +480,8 @@ public class EDTGui implements ItemListener, ActionListener{
     }
     
     private void setupVisualizarArchivo(){
-        panelArchivo.setSize(display.getxmax() - (display.getxmax() / 2 - (display.getxmax() / 7)), display.getymax() - (display.getymax() / 11));
-        panelArchivo.setLocation(display.getxmax() / 2 - (display.getxmax() / 7), display.getymax() / 11);
+        panelArchivo.setSize(display.getXmax() - (display.getXmax() / 2 - (display.getXmax() / 7)), display.getYmax() - (display.getYmax() / 11));
+        panelArchivo.setLocation(display.getXmax() / 2 - (display.getXmax() / 7), display.getYmax() / 11);
         panelArchivo.setBackground(Color.DARK_GRAY);
         panelArchivo.setLayout(null);
         

@@ -13,8 +13,8 @@ import LabEstructuras.Arbol.NodoArbol;
  */
 public class NodoLista {
     
-    NodoLista link;
-    NodoArbol nodoArbol;
+    private NodoLista link;
+    private NodoArbol nodoArbol;
     
     public NodoLista(NodoArbol dato){
         this.nodoArbol = dato;
@@ -26,5 +26,9 @@ public class NodoLista {
     
     public NodoLista getLink(){
         return link;
+    }
+    
+    public void setLink(NodoLista n){
+        this.link = n;
     }
 }
