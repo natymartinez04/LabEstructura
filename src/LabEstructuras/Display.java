@@ -114,6 +114,7 @@ public class Display extends JFrame implements ActionListener{
             container.repaint();
             listaEntregables = arbol.NodosEntregables(arbol.getRaiz());
             cronogramaGUI.setUpCronograma(listaEntregables);
+            
         }
     }
 
