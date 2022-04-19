@@ -24,7 +24,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
     private Display display;
     private int id=0;
     private JPanel panelHeader, panelBody;
-    private JLabel lblCronograma, lblEntregables, lblDuracion, lblCosto, lblDependencia;
+    private JLabel lblCronograma, lblEntregables, lblDuracion, lblCosto, lblDependencia,lblPrecedentes;
     private JComboBox selectorEntregables,selectorDependencia,selectorEntregablesPrecedencia;
     private JLabel lblDias, lblHrs, lblMin;
     private JTextField duracionDias, duracionHrs, duracionMin, costoField;
@@ -46,6 +46,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
         lblDuracion = new JLabel();
         lblCosto = new JLabel();
         lblDependencia = new JLabel();
+        lblPrecedentes = new JLabel();
         lblDias = new JLabel();
         lblHrs = new JLabel();
         lblMin = new JLabel();
@@ -72,7 +73,9 @@ public class CronogramaGui implements ItemListener, ActionListener{
     
     public void setUpCronograma(ListaEnlazada listaEntregables){
         this.listaEntregables = listaEntregables;
-        display.getContainer().setBackground(new Color(200, 227, 250));
+        Boolean accion = HayEntregables(listaEntregables);
+        if (accion == true){
+            display.getContainer().setBackground(new Color(200, 227, 250));
         
         lblCronograma.setText("Cronograma");
         lblCronograma.setFont(new Font("Times New Roman", Font.CENTER_BASELINE, 57));
@@ -100,6 +103,24 @@ public class CronogramaGui implements ItemListener, ActionListener{
         display.addToContainer(panelHeader, panelBody);
         display.getContainer().validate();
         display.getContainer().repaint();
+        }else{
+            display.getContainer().removeAll();
+            display.getContainer().validate();
+            display.getContainer().repaint();
+            display.pantallaPrincipal();
+            
+        }
+        
+    }
+    
+    private void ListaPrecedencia(ListaEnlazada listaEntregables,String EntregableSeleccionado){
+        NodoLista p = listaEntregables.getPtr();
+        while (p != null){
+            if (p.getNodoArbol().getDato() != EntregableSeleccionado){
+                selectorEntregablesPrecedencia.addItem(p.getNodoArbol().getDato());
+            }
+            p = p.getLink();
+        }
     }
     
     private void setPanelBody(){
@@ -109,15 +130,18 @@ public class CronogramaGui implements ItemListener, ActionListener{
         
         selectorEntregables.addItem("-");
         AddEntregables();
+        
         selectorEntregables.setVisible(true);
         selectorEntregables.setBounds(lblEntregables.getX() + 50, 
                     lblEntregables.getY() + lblEntregables.getHeight() + 25, 
                     400, 
                     40);
+        if (selectorDependencia.getItemCount()<3){
+            selectorDependencia.addItem("-");
+            selectorDependencia.addItem("Si");
+            selectorDependencia.addItem("No");
+        }
         
-        selectorDependencia.addItem("-");
-        selectorDependencia.addItem("Si");
-        selectorDependencia.addItem("No");
         selectorDependencia.setVisible(true);
         selectorDependencia.setBounds(750, 190,400,40);
         
@@ -156,6 +180,9 @@ public class CronogramaGui implements ItemListener, ActionListener{
         lblDependencia.setText("Tiene precedentes?");
         lblDependencia.setBounds(lblDuracion.getX()*6,lblEntregables.getY(),330,45);
         
+        lblPrecedentes.setBounds(730,250,700,45);
+        selectorEntregablesPrecedencia.setBounds(760,320,400,40);
+        
         btnBackMain.setIcon(new ImageIcon(getClass().getResource("/Images/button_regresar.png")));
         btnBackMain.setSize(250, 80);
         btnBackMain.setLocation(display.getXmax() - (btnBackMain.getWidth() + display.getXmax() / 20), 
@@ -168,15 +195,30 @@ public class CronogramaGui implements ItemListener, ActionListener{
         setupBtns(btnBackMain);
         txtSetBorder(duracionDias, duracionHrs, duracionMin, costoField);
         setFontRobotoToLabel(lblDias, lblHrs, lblMin);
-        setFontTimesToLabels(lblEntregables, lblDuracion, lblCosto,lblDependencia);
-        setColorGrayToLabels(lblEntregables, lblDuracion, lblCosto,lblDependencia);
+        setFontTimesToLabels(lblEntregables, lblDuracion, lblCosto,lblDependencia,lblPrecedentes);
+        setColorGrayToLabels(lblEntregables, lblDuracion, lblCosto,lblDependencia,lblPrecedentes);
         
         addObjectToPanel(panelBody, selectorEntregables,selectorDependencia,btnBackMain, lblEntregables, 
                 lblDuracion, duracionDias, lblDias, duracionHrs, lblHrs, duracionMin, lblMin, 
-                lblCosto, costoField,lblDependencia,btnGuardar);
+                lblCosto, costoField,lblDependencia,btnGuardar,lblPrecedentes,selectorEntregablesPrecedencia);
+        
     }
-    
-    
+
+    private void VerificacionEmpty(){
+      if (duracionDias.getText().isEmpty() == true ||duracionHrs.getText().isEmpty() == true || duracionMin.getText().isEmpty() == true || costoField.getText().isEmpty() == true || selectorEntregables.getSelectedItem().equals("-")){
+          JOptionPane.showMessageDialog(null, "Por favor llene toda la información");
+      }
+    }
+    private Boolean HayEntregables(ListaEnlazada listaEntregables){
+        Boolean accion=true;
+        NodoLista p = listaEntregables.getPtr();
+        if (p == null){
+            JOptionPane.showMessageDialog(null, "Usted no tiene entregables agregados a su proyecto, vaya a la sección de EDT para agregar sus entregables");
+            accion = false;
+        }
+        return accion;
+    }
+
     private void AddEntregables(){
         NodoLista p = listaEntregables.getPtr();
         while (p != null){
@@ -186,13 +228,29 @@ public class CronogramaGui implements ItemListener, ActionListener{
         }
         
     }
-    private void ListaPrecedencia(){
-        
-    }
+   
+    
     
     @Override
     public void itemStateChanged(ItemEvent e) {
-        
+        if (e.getSource() == selectorDependencia){
+            
+            if (selectorDependencia.getSelectedItem().equals("Si")){
+                lblPrecedentes.setText("Seleccione un entregable precedente:");
+                selectorEntregablesPrecedencia.setVisible(true);
+                String entregable;
+                entregable = selectorEntregables.getSelectedItem().toString();
+                ListaPrecedencia(listaEntregables,entregable);
+                
+            }else{
+                selectorEntregablesPrecedencia.setVisible(false);
+                lblPrecedentes.setText("");
+            }
+            
+        }
+        if (e.getSource() == selectorEntregables){
+            selectorEntregablesPrecedencia.removeAllItems();
+        }
     }
 
     @Override
@@ -200,8 +258,6 @@ public class CronogramaGui implements ItemListener, ActionListener{
         //acción botón regresar
         if (ae.getSource() == btnBackMain){
             display.getContainer().removeAll();
-            selectorDependencia.removeAllItems();
-            selectorEntregables.removeAllItems();
             display.getContainer().validate();
             display.getContainer().repaint();
             display.pantallaPrincipal();
@@ -209,6 +265,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
         
         //acción botón guardar
         if (ae.getSource() == btnGuardar){
+            VerificacionEmpty();
             String nombre = selectorDependencia.getSelectedItem().toString();
             int dias = Integer.parseInt(duracionDias.getText());
             int horas = Integer.parseInt(duracionHrs.getText());
@@ -217,14 +274,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
             Vertice vertice = new Vertice(nombre,dias,horas,minutos,costo);
         }
         
-        if (ae.getSource() == selectorDependencia){
-            if (selectorDependencia.getSelectedItem() == "Si"){
-                
-            }else{
-                
-            }
-            
-        }
+        
     }
     
 
@@ -264,3 +314,6 @@ public class CronogramaGui implements ItemListener, ActionListener{
             txt.setBorder(null);
         }
     }
+    
+    
+}
