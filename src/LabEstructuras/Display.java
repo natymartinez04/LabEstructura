@@ -50,6 +50,7 @@ public class Display extends JFrame implements ActionListener{
         this.ymax = ymax;
         this.nombreProyecto = proyecto;
         this.listaEntregables = listaEntregables;
+        
         declaracion();
         pantallaPrincipal(); 
     }
@@ -70,6 +71,8 @@ public class Display extends JFrame implements ActionListener{
     }
     
     public void pantallaPrincipal(){
+       
+       
         container.setLayout(null);
         container.setBackground(new Color(41, 96, 137));
         
@@ -158,3 +161,4 @@ public class Display extends JFrame implements ActionListener{
         return nombreObject;
     }
 }
+
