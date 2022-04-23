@@ -23,15 +23,18 @@ import javax.swing.*;
 public class CronogramaGui implements ItemListener, ActionListener{
     
     private Display display;
+    private JPanel menuPanel;
+    
     private int id = 0;
     private JPanel panelHeader, panelBody;
     private JLabel lblCronograma, lblEntregables, lblDuracion, lblCosto, lblDependencia,lblPrecedentes;
     private JComboBox selectorEntregables,selectorDependencia,selectorEntregablesPrecedencia;
     private JLabel lblDias, lblHrs, lblMin;
     private JTextField duracionDias, duracionHrs, duracionMin, costoField;
-    private JButton btnBackMain, btnMenu, btnGuardar,btnAgregar;
+    private JButton btnBackMain, btnMenu, btnGuardar,btnAgregar,btnIrAEDT,btnVisualizar,btnModificarInfo;
     private ListaEnlazada listaEntregables;
     private Grafo grafo;
+    int menu = 0;
     
     public CronogramaGui(Display display){
         this.display = display;
@@ -40,6 +43,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
     }
 
     private void declaration(){
+        menuPanel = new JPanel();
         selectorEntregables = new JComboBox();
         selectorDependencia = new JComboBox();
         selectorEntregablesPrecedencia = new JComboBox();
@@ -60,6 +64,9 @@ public class CronogramaGui implements ItemListener, ActionListener{
         btnGuardar = new JButton();
         btnBackMain = new JButton();
         btnAgregar = new JButton();
+        btnIrAEDT = new JButton();
+        btnModificarInfo = new JButton();
+        btnVisualizar = new JButton();
         panelHeader = new JPanel();
         panelBody = new JPanel();
         grafo = new Grafo();
@@ -88,7 +95,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
 
             btnMenu.setIcon(new ImageIcon(getClass().getResource("/Images/menu.png")));
             btnMenu.setBounds(30, 30, 33, 33);
-            btnMenu.setEnabled(false);
+            
 
             panelHeader.setBounds(0,0, display.getXmax(), display.getYmax() / 11);
             panelHeader.setBackground(new Color(255, 122, 202));
@@ -194,7 +201,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
         setFontTimesToLabels(lblEntregables, lblDuracion, lblCosto,lblDependencia,lblPrecedentes);
         setColorGrayToLabels(lblEntregables, lblDuracion, lblCosto,lblDependencia,lblPrecedentes);
         
-        addObjectToPanel(panelBody, selectorEntregables,selectorDependencia,btnBackMain, lblEntregables, 
+        addObjectToPanel(panelBody, menuPanel,selectorEntregables,selectorDependencia,btnBackMain, lblEntregables, 
                 lblDuracion, duracionDias, lblDias, duracionHrs, lblHrs, duracionMin, lblMin, 
                 lblCosto, costoField,lblDependencia,btnGuardar,lblPrecedentes,selectorEntregablesPrecedencia);
         
@@ -250,6 +257,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
         }
         if (e.getSource() == selectorEntregables){
             selectorEntregablesPrecedencia.removeAllItems();
+            selectorDependencia.setSelectedItem("-");
         }
     }
 
@@ -280,12 +288,61 @@ public class CronogramaGui implements ItemListener, ActionListener{
                 grafo.conectar(vertice.getNombre(), dependiente.getNombre());
                 dependiente.showVerticesAdyecente();
             }
-            grafo.mostrarGrafo();
+            grafo.mostrarGrafo(); 
+        }
+        if (ae.getSource() == btnMenu){
+            if (menu == 0){
+                System.out.println("Holad");
+                menuPanel.setBounds(0, 0, display.getContainer().getWidth()/5, display.getContainer().getHeight());
+                menuPanel.setBackground(Color.DARK_GRAY);
+                menuPanel.setVisible(true);
+                MoveItemsRight(selectorEntregables,selectorDependencia, lblEntregables, 
+                    lblDuracion, duracionDias, lblDias, duracionHrs, lblHrs, duracionMin, lblMin, 
+                    lblCosto, costoField,lblDependencia,btnGuardar,lblPrecedentes,selectorEntregablesPrecedencia);
+                addObjectToPanel(menuPanel,btnIrAEDT,btnVisualizar,btnModificarInfo);
+                menuPanel.setLayout(null);
+                SetBotones();
+                menu = 1;
+            }else{
+                menuPanel.setVisible(false);
+                menu = 0;
+                MoveItemsLeft(selectorEntregables,selectorDependencia, lblEntregables, 
+                    lblDuracion, duracionDias, lblDias, duracionHrs, lblHrs, duracionMin, lblMin, 
+                    lblCosto, costoField,lblDependencia,btnGuardar,lblPrecedentes,selectorEntregablesPrecedencia);
+                
+            }
+            
+            
+            
+            
+            
             
         }
         
     }
-    
+    private void SetBotones(){
+        btnIrAEDT.setBounds(0,250,menuPanel.getWidth(),50);
+        btnIrAEDT.setText("Ir a EDT");
+        btnVisualizar.setBounds(0,150,menuPanel.getWidth(),50);
+        btnVisualizar.setText("Visualizar");
+        btnModificarInfo.setBounds(0,50,menuPanel.getWidth(),50);
+        btnModificarInfo.setText("Modificar Información");
+
+    }
+    private void MoveItemsRight(JComponent...object){
+        if (menu == 0){
+            for(JComponent obj: object){
+                obj.setBounds(obj.getX()+200, obj.getY(), obj.getWidth(), obj.getHeight());
+            }
+        }  
+    }
+    private void MoveItemsLeft(JComponent...object){
+        if (menu == 0){
+            for(JComponent obj: object){
+                obj.setBounds(obj.getX()-200, obj.getY(), obj.getWidth(), obj.getHeight());
+            }
+        }  
+    }
 
     public void addObjectToPanel(JPanel panel, JComponent ...objs){
         for(JComponent obj: objs){
