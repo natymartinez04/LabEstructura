@@ -23,6 +23,8 @@ public class Display extends JFrame implements ActionListener{
     private EDTGui edtGUI;
     private CronogramaGui cronogramaGUI;
     
+   
+    
     private String nombreProyecto;
     private static String nombreObject;
     private int xmax, ymax;
@@ -44,6 +46,7 @@ public class Display extends JFrame implements ActionListener{
     }
     
     private void declaracion(){
+  
         arbol = new Arbol();
         arbol.setRaiz(new NodoArbol(this.nombreProyecto, false));
         container = this.getContentPane();
@@ -103,7 +106,8 @@ public class Display extends JFrame implements ActionListener{
             removeOfContainer(lblPrincipal, btnEDT, btnCronograma, imagen, imagen2);
             container.validate();
             container.repaint();
-            listaEntregables = arbol.NodosEntregables(arbol.getRaiz());
+            ListaEnlazada listaEntregables = new ListaEnlazada();
+            listaEntregables = arbol.NodosEntregables(arbol.getRaiz(),listaEntregables);
             cronogramaGUI.setUpCronograma(listaEntregables);
             
         }
