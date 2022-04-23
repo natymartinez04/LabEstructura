@@ -5,6 +5,7 @@
  */
 package LabEstructuras;
 
+import LabEstructuras.Grafos.Grafo;
 import LabEstructuras.Grafos.Vertice;
 import java.awt.Color;
 import java.awt.Font;
@@ -22,7 +23,7 @@ import javax.swing.*;
 public class CronogramaGui implements ItemListener, ActionListener{
     
     private Display display;
-    private int id=0;
+    private int id = 0;
     private JPanel panelHeader, panelBody;
     private JLabel lblCronograma, lblEntregables, lblDuracion, lblCosto, lblDependencia,lblPrecedentes;
     private JComboBox selectorEntregables,selectorDependencia,selectorEntregablesPrecedencia;
@@ -30,6 +31,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
     private JTextField duracionDias, duracionHrs, duracionMin, costoField;
     private JButton btnBackMain, btnMenu, btnGuardar,btnAgregar;
     private ListaEnlazada listaEntregables;
+    private Grafo grafo;
     
     public CronogramaGui(Display display){
         this.display = display;
@@ -60,6 +62,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
         btnAgregar = new JButton();
         panelHeader = new JPanel();
         panelBody = new JPanel();
+        grafo = new Grafo();
     }
     
     private void addActionListener(){
@@ -74,35 +77,35 @@ public class CronogramaGui implements ItemListener, ActionListener{
     public void setUpCronograma(ListaEnlazada listaEntregables){
         this.listaEntregables = listaEntregables;
         Boolean accion = HayEntregables(listaEntregables);
-        if (accion == true){
+        if (accion){
             display.getContainer().setBackground(new Color(200, 227, 250));
-        
-        lblCronograma.setText("Cronograma");
-        lblCronograma.setFont(new Font("Times New Roman", Font.CENTER_BASELINE, 57));
-        lblCronograma.setSize(350, 60);
-        lblCronograma.setForeground(Color.BLACK);
-        lblCronograma.setLocation((display.getXmax() - lblCronograma.getWidth())/2 , 22);
-        
-        btnMenu.setIcon(new ImageIcon(getClass().getResource("/Images/menu.png")));
-        btnMenu.setBounds(30, 30, 33, 33);
-        btnMenu.setEnabled(false);
-        
-        panelHeader.setBounds(0,0, display.getXmax(), display.getYmax() / 11);
-        panelHeader.setBackground(new Color(255, 122, 202));
-        panelHeader.setLayout(null);
-        
-        setupBtns(btnMenu);
-        addObjectToPanel(panelHeader, lblCronograma, btnMenu);
-        
-        panelBody.setBounds(0, panelHeader.getHeight(), display.getXmax(), display.getYmax());
-        panelBody.setBackground(new Color(200, 227, 250));
-        panelBody.setLayout(null);
-        
-        setPanelBody();
-        
-        display.addToContainer(panelHeader, panelBody);
-        display.getContainer().validate();
-        display.getContainer().repaint();
+
+            lblCronograma.setText("Cronograma");
+            lblCronograma.setFont(new Font("Times New Roman", Font.CENTER_BASELINE, 57));
+            lblCronograma.setSize(350, 60);
+            lblCronograma.setForeground(Color.BLACK);
+            lblCronograma.setLocation((display.getXmax() - lblCronograma.getWidth())/2 , 22);
+
+            btnMenu.setIcon(new ImageIcon(getClass().getResource("/Images/menu.png")));
+            btnMenu.setBounds(30, 30, 33, 33);
+            btnMenu.setEnabled(false);
+
+            panelHeader.setBounds(0,0, display.getXmax(), display.getYmax() / 11);
+            panelHeader.setBackground(new Color(255, 122, 202));
+            panelHeader.setLayout(null);
+
+            setupBtns(btnMenu);
+            addObjectToPanel(panelHeader, lblCronograma, btnMenu);
+
+            panelBody.setBounds(0, panelHeader.getHeight(), display.getXmax(), display.getYmax());
+            panelBody.setBackground(new Color(200, 227, 250));
+            panelBody.setLayout(null);
+
+            setPanelBody();
+
+            display.addToContainer(panelHeader, panelBody);
+            display.getContainer().validate();
+            display.getContainer().repaint();
         }else{
             display.getContainer().removeAll();
             display.getContainer().validate();
@@ -113,7 +116,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
         
     }
     
-    private void ListaPrecedencia(ListaEnlazada listaEntregables,String EntregableSeleccionado){
+    private void ListaPrecedencia(ListaEnlazada listaEntregables, String EntregableSeleccionado){
         NodoLista p = listaEntregables.getPtr();
         while (p != null){
             if (p.getNodoArbol().getDato() != EntregableSeleccionado){
@@ -143,20 +146,16 @@ public class CronogramaGui implements ItemListener, ActionListener{
         }
         
         selectorDependencia.setVisible(true);
-        selectorDependencia.setBounds(750, 190,400,40);
-        
+        selectorDependencia.setBounds(750, 190, 400, 40);
         
         btnGuardar.setText("Guardar");
         btnGuardar.setForeground(Color.BLUE);
         btnGuardar.setBackground(Color.WHITE);
-        btnGuardar.setBounds(620 ,600, 180 , 40);
-        
-        
+        btnGuardar.setBounds(620 ,600, 180, 40);
         
         lblDuracion.setText("Duracion:");
         lblDuracion.setBounds(lblEntregables.getX(), 
                 selectorEntregables.getY() + selectorEntregables.getHeight() + 50, 350, 45);
-        
         
         duracionDias.setBounds(selectorEntregables.getX() + 40, lblDuracion.getY()+ lblDuracion.getHeight() + 25, 40, 30);
         lblDias.setText(": Dias");
@@ -178,19 +177,16 @@ public class CronogramaGui implements ItemListener, ActionListener{
         
         
         lblDependencia.setText("Tiene precedentes?");
-        lblDependencia.setBounds(lblDuracion.getX()*6,lblEntregables.getY(),330,45);
+        lblDependencia.setBounds(lblDuracion.getX()*6, lblEntregables.getY(), 330, 45);
         
-        lblPrecedentes.setBounds(730,250,700,45);
-        selectorEntregablesPrecedencia.setBounds(760,320,400,40);
+        lblPrecedentes.setBounds(730, 250, 700, 45);
+        selectorEntregablesPrecedencia.setBounds(760, 320, 400, 40);
         
         btnBackMain.setIcon(new ImageIcon(getClass().getResource("/Images/button_regresar.png")));
         btnBackMain.setSize(250, 80);
         btnBackMain.setLocation(display.getXmax() - (btnBackMain.getWidth() + display.getXmax() / 20), 
                 display.getYmax() - (btnBackMain.getHeight() * 4));
         
-        
-        //crear y configiurar boton pa guardaar.
-        //falta comprobacion de bad input
         
         setupBtns(btnBackMain);
         txtSetBorder(duracionDias, duracionHrs, duracionMin, costoField);
@@ -205,12 +201,15 @@ public class CronogramaGui implements ItemListener, ActionListener{
     }
 
     private void VerificacionEmpty(){
-      if (duracionDias.getText().isEmpty() == true ||duracionHrs.getText().isEmpty() == true || duracionMin.getText().isEmpty() == true || costoField.getText().isEmpty() == true || selectorEntregables.getSelectedItem().equals("-")){
+        if (duracionDias.getText().isEmpty() == true ||
+              duracionHrs.getText().isEmpty() == true || duracionMin.getText().isEmpty() == true || 
+              costoField.getText().isEmpty() == true || selectorEntregables.getSelectedItem().equals("-")){
           JOptionPane.showMessageDialog(null, "Por favor llene toda la información");
-      }
+        }
     }
+    
     private Boolean HayEntregables(ListaEnlazada listaEntregables){
-        Boolean accion=true;
+        Boolean accion = true;
         NodoLista p = listaEntregables.getPtr();
         if (p == null){
             JOptionPane.showMessageDialog(null, "Usted no tiene entregables agregados a su proyecto, vaya a la sección de EDT para agregar sus entregables");
@@ -221,16 +220,17 @@ public class CronogramaGui implements ItemListener, ActionListener{
 
     private void AddEntregables(){
         NodoLista p = listaEntregables.getPtr();
-        while (p != null){
-            System.out.println("hola");
+        selectorEntregables.removeAllItems();
+        selectorEntregables.addItem("-");
+        for(int i = 0; i < listaEntregables.getTamaño(); i++){
+            System.out.println(i);
             selectorEntregables.addItem(p.getNodoArbol().getDato());
             p = p.getLink();
         }
         
     }
    
-    
-    
+
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getSource() == selectorDependencia){
@@ -240,7 +240,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
                 selectorEntregablesPrecedencia.setVisible(true);
                 String entregable;
                 entregable = selectorEntregables.getSelectedItem().toString();
-                ListaPrecedencia(listaEntregables,entregable);
+                ListaPrecedencia(listaEntregables, entregable);
                 
             }else{
                 selectorEntregablesPrecedencia.setVisible(false);
@@ -266,14 +266,23 @@ public class CronogramaGui implements ItemListener, ActionListener{
         //acción botón guardar
         if (ae.getSource() == btnGuardar){
             VerificacionEmpty();
-            String nombre = selectorDependencia.getSelectedItem().toString();
+            String nombre = selectorEntregables.getSelectedItem().toString();
             int dias = Integer.parseInt(duracionDias.getText());
             int horas = Integer.parseInt(duracionHrs.getText());
             int minutos = Integer.parseInt(duracionMin.getText());
-            double costo = Integer.parseInt(duracionMin.getText());
+            double costo = Integer.parseInt(costoField.getText());
             Vertice vertice = new Vertice(nombre,dias,horas,minutos,costo);
+            grafo.addVertice(vertice);
+            
+            if (selectorDependencia.getSelectedItem().equals("Si")){
+                Vertice dependiente = new Vertice(selectorEntregablesPrecedencia.getSelectedItem().toString(),0,0,0,0);
+                grafo.addVertice(dependiente);
+                grafo.conectar(vertice.getNombre(), dependiente.getNombre());
+                dependiente.showVerticesAdyecente();
+            }
+            grafo.mostrarGrafo();
+            
         }
-        
         
     }
     

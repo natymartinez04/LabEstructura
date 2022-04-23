@@ -7,11 +7,22 @@ package LabEstructuras;
  */
 public class Nodo {
     
-    Object dato;
-    Nodo link;
+    private Object dato;
+    private Nodo link;
     
     public Nodo(Object dato){
         this.dato = dato;
     }
     
+    public Object getDato(){
+        return dato;
+    }
+    
+    public Nodo getLink(){
+        return link;
+    }
+    
+    public void setLink(Nodo a){
+        this.link = a;
+    }
 }

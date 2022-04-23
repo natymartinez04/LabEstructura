@@ -34,10 +34,10 @@ public class ListaEnlazada {
             ptrN = new Nodo(n);
         }else{
             Nodo p = ptrN;
-            while (p.link != null){
-                p = p.link;
+            while (p.getLink() != null){
+                p = p.getLink();
             }
-            p.link = new Nodo(n); 
+            p.setLink(new Nodo(n)); 
         } 
     }
     
@@ -47,7 +47,7 @@ public class ListaEnlazada {
         Nodo actual = ptrN;
         while(actual != null){
             c++;
-            actual = actual.link;
+            actual = actual.getLink();
         }
         return c;
     }
@@ -63,15 +63,15 @@ public class ListaEnlazada {
         return i;
     }
     
-    public Object getInfoNodo(int i){
+    public Object getInfoNodo(int index){
         Nodo p = ptrN;
-        int index = 0;
+        int i = 0;
         while(p != null){
-            if(index == i){
-                return p.dato;
+            if(i == index){
+                return p.getDato();
             }
-            p = p.link;
-            index++;
+            p = p.getLink();
+            i++;
         }
         return null;
     }

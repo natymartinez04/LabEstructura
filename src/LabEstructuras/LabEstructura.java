@@ -16,7 +16,7 @@ public class LabEstructura {
         String proyecto;
         ListaEnlazada listaEntregables = new ListaEnlazada();
         proyecto = JOptionPane.showInputDialog("Ingresa el nombre del proyecto: ");
-        JFrame display = new Display(1500, 1000, proyecto,listaEntregables);
+        JFrame display = new Display(1500, 1000, proyecto, listaEntregables);
         display.setDefaultCloseOperation(EXIT_ON_CLOSE);
         display.setSize(1500, 1000);
         display.setResizable(false);

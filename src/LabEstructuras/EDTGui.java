@@ -573,7 +573,7 @@ public class EDTGui implements ItemListener, ActionListener{
                 nombreArchivo = fileChoose.getName();
                 lblNombreArchivo.setText(nombreArchivo);
                 lblNombreArchivo.setLocation(selectorPaquete.getX() + 100, lblNombrePaquete.getY() + 135);
-                lblNombreArchivo.setSize(nombreArchivo.length()*8, 30);
+                lblNombreArchivo.setSize(nombreArchivo.length()*10, 30);
                 lblNombreArchivo.setFont(new Font("Arial", Font.ITALIC, 20));
                 lblNombreArchivo.setForeground(Color.DARK_GRAY);
                 btnFileChooser.setSize(200 ,40);
