@@ -22,7 +22,6 @@ public class Arbol {
     public Arbol(){
         this.raiz = null;
         cadenaInorder = "";
-
     }
     
     public Boolean Existe(NodoArbol raiz, String dato){
@@ -60,7 +59,7 @@ public class Arbol {
         if (raiz.getHijos() != null){
             NodoLista p = raiz.getHijos().getPtr();
             while(p != null){
-                if (p.getNodoArbol().getTipo() == true){
+                if (p.getNodoArbol().getTipo()){
                     entregablesLista.insert(p.getNodoArbol());
                 }
                 NodosEntregables(p.getNodoArbol(),entregablesLista);

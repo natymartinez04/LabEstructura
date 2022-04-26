@@ -21,31 +21,24 @@ public class Grafo {
         if(!existeVertice(v.getNombre())){
             System.out.println("Vertice agregada");
             vertices.insertN(v);
-        }else{
-            System.out.println("Esa vertice ya existe");
-        }
-        
+        } 
     }
     
     public void conectar(String a, String b){
         Vertice n = getVertice(a);
         if(n != null){
-            System.out.println("Conectar A getNombre()= " + n.getNombre());
+            //System.out.println("Conectar A getNombre()= " + n.getNombre());
             Vertice m = getVertice(b);
-            System.out.println("Conectar B getNombre()= " + m.getNombre());
+            //System.out.println("Conectar B getNombre()= " + m.getNombre());
             m.addVerticeAdyacente(n); 
-        }else{
-            System.out.println("El nodo no existe");
         }
     }
-    
     
     public Vertice getVertice(String text){
         Nodo a = vertices.getPtrN();
         while(a != null){
             Vertice m = (Vertice) a.getDato();
             if(m.getNombre().equals(text)){
-                System.out.println("getVertice getDato()= " + a.getDato());
                 return m;
             }
             a = a.getLink();
@@ -54,14 +47,14 @@ public class Grafo {
     }
     
     public void mostrarGrafo(){
-        System.out.println("\n Mostrar Vertices Grafo");
+        System.out.println("\nMostrar Vertices Grafo");
         Nodo p = vertices.getPtrN();
         while(p != null){
             Vertice i =(Vertice) p.getDato();
             System.out.print(i.getNombre() + " --> ");
             p = p.getLink();
         }
-        
+        System.out.print( " null ");
     }
     
     public int numVertices(){

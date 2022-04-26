@@ -113,4 +113,25 @@ public class ListaEnlazada {
         return ptrN;
     }
     
+    public void delete(String nombre){
+        Boolean nodoEliminado = false;
+        int i = 1;
+        if(ptr.getNodoArbol().getDato().equals(nombre)){
+            ptr = ptr.getLink();
+        }else{
+            NodoLista anterior = ptr;
+            NodoLista p = anterior.getLink();
+            while(p != null && !nodoEliminado){
+                if(p.getNodoArbol().getDato().equals(nombre)){
+                    anterior.setLink(p.getLink());
+                    p.setLink(null);
+                    nodoEliminado = true;
+                }
+                anterior = p;
+                p = p.getLink();
+                i++;
+            }
+        }
+        
+    }
 }

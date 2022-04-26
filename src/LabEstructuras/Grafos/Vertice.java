@@ -13,15 +13,21 @@ import java.util.Date;
 public class Vertice {
     
     private String nombre;
-    private int dias, horas, minutos;
+    private int dias, horas, minutos, costo;
     private Date fechai;
     private ListaEnlazada verticesAdyacentes;
     
-    public Vertice(String nombre, int dias, int horas, int minutos, double costo){
+    public Vertice(String nombre){
+        this.nombre = nombre;
+        verticesAdyacentes = new ListaEnlazada();
+    }
+
+    public Vertice(String nombre, int dias, int horas, int minutos, int costo){
         this.nombre = nombre;
         this.dias = dias;
         this.horas = horas;
         this.minutos = minutos;
+        this.costo = costo;
         verticesAdyacentes = new ListaEnlazada();
     }
     
@@ -34,7 +40,7 @@ public class Vertice {
         for(int i = 0; i <= verticesAdyacentes.getTamañoN(); i++){
             Vertice v = (Vertice)verticesAdyacentes.getInfoNodo(i);
             if(v != null){
-                System.out.println(v.getNombre() + " --> ");
+                System.out.print(v.getNombre() + " --> ");
             }else{
                 System.out.print(" null ");
             }
@@ -72,7 +78,14 @@ public class Vertice {
     public void setMinutos(int minutos) {
         this.minutos = minutos;
     }
+    
+    public int getCosto() {
+        return minutos;
+    }
 
+    public void setCosto(int costo) {
+        this.costo = costo;
+    }
     public Date getFechai() {
         return fechai;
     }
