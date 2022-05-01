@@ -13,7 +13,7 @@ import java.util.Date;
 public class Vertice {
     
     private String nombre;
-    private int dias, horas, minutos, costo;
+    private int dias, horas, costo;
     private Date fechai;
     public Boolean infoCompleta;
     private ListaEnlazada verticesAdyacentes;
@@ -24,11 +24,10 @@ public class Vertice {
         verticesAdyacentes = new ListaEnlazada();
     }
 
-    public Vertice(String nombre, int dias, int horas, int minutos, int costo){
+    public Vertice(String nombre, int dias, int horas , int costo){
         this.nombre = nombre;
         this.dias = dias;
         this.horas = horas;
-        this.minutos = minutos;
         this.costo = costo;
         infoCompleta = false;
         verticesAdyacentes = new ListaEnlazada();
@@ -73,17 +72,9 @@ public class Vertice {
     public void setHoras(int horas) {
         this.horas = horas;
     }
-
-    public int getMinutos() {
-        return minutos;
-    }
-
-    public void setMinutos(int minutos) {
-        this.minutos = minutos;
-    }
     
     public int getCosto() {
-        return minutos;
+        return costo;
     }
 
     public void setCosto(int costo) {
