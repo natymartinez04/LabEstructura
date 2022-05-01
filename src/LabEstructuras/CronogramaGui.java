@@ -137,7 +137,6 @@ public class CronogramaGui implements ItemListener, ActionListener{
     }
     
     private void setPanelBody(){
-        
         lblEntregables.setText("Entregables:");
         lblEntregables.setBounds(120, panelHeader.getHeight() + 30, 350, 45);
         
@@ -208,11 +207,32 @@ public class CronogramaGui implements ItemListener, ActionListener{
         
     }
 
-    private void VerificacionEmpty(){
-        if (txtDuracionDias.getText().isEmpty() == true || txtDuracionHrs.getText().isEmpty() == true || 
-              txtCostoField.getText().isEmpty() == true || selectorEntregables.getSelectedItem().equals("-")){
-          JOptionPane.showMessageDialog(null, "Por favor llene toda la información");
+    private boolean isBadInput() {
+        if(!verificacionEmpty()){
+            try{
+                int m = Integer.parseInt(txtDuracionDias.getText());
+                m = Integer.parseInt(txtDuracionHrs.getText());
+                m = Integer.parseInt(txtCostoField.getText());
+            }catch(Exception e){ 
+                JOptionPane.showMessageDialog(null, "Verifique los datos introducidos");
+                return true;
+            }
+            if(selectorDependencia.getSelectedItem().equals("Si") && selectorEntregablesPrecedencia.getSelectedItem().equals("-")){
+                JOptionPane.showMessageDialog(null, "Seleccione un entregable");
+            }
+        }else{
+            return true;
         }
+        return false;
+    }
+    
+    private boolean verificacionEmpty(){
+        if (txtDuracionDias.getText().isEmpty() || txtDuracionHrs.getText().isEmpty() || txtCostoField.getText().isEmpty() 
+                || selectorEntregables.getSelectedItem().equals("-") || selectorDependencia.getSelectedItem().equals("-")){
+            JOptionPane.showMessageDialog(null, "Por favor llene toda la información");
+            return true;
+        }
+        return false;
     }
     
     private Boolean HayEntregables(ListaEnlazada listaEntregables){
@@ -253,7 +273,6 @@ public class CronogramaGui implements ItemListener, ActionListener{
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getSource() == selectorDependencia){
-            
             if (selectorDependencia.getSelectedItem().equals("Si")){
                 lblPrecedentes.setText("Seleccione un entregable precedente:");
                 selectorEntregablesPrecedencia.setVisible(true);
@@ -287,30 +306,31 @@ public class CronogramaGui implements ItemListener, ActionListener{
         }
         
         if (ae.getSource() == btnGuardar){
-            VerificacionEmpty();
-            Vertice verticeEntregable;
-            String nombre = selectorEntregables.getSelectedItem().toString();
-            
-            verticeEntregable = grafo.getVertice(nombre);
-            
-            verticeEntregable.setDias(Integer.parseInt(txtDuracionDias.getText()));
-            verticeEntregable.setHoras(Integer.parseInt(txtDuracionHrs.getText()));
-            verticeEntregable.setCosto(Integer.parseInt(txtCostoField.getText()));
-            verticeEntregable.setInfoCompleta();
+            if(!isBadInput()){
+                Vertice verticeEntregable;
+                String nombre = selectorEntregables.getSelectedItem().toString();
+
+                verticeEntregable = grafo.getVertice(nombre);
+
+                verticeEntregable.setDias(Integer.parseInt(txtDuracionDias.getText()));
+                verticeEntregable.setHoras(Integer.parseInt(txtDuracionHrs.getText()));
+                verticeEntregable.setCosto(Integer.parseInt(txtCostoField.getText()));
+                verticeEntregable.setInfoCompleta();
  
-            if (selectorDependencia.getSelectedItem().equals("Si")){
-                String nombreEntregableDepe = selectorEntregablesPrecedencia.getSelectedItem().toString();
-                Vertice dependiente;
-                
-                dependiente = grafo.getVertice(nombreEntregableDepe);
-                
-                grafo.conectar(verticeEntregable.getNombre(), dependiente.getNombre());
-                dependiente.showVerticesAdyecente();
+                if (selectorDependencia.getSelectedItem().equals("Si")){
+                    String nombreEntregableDepe = selectorEntregablesPrecedencia.getSelectedItem().toString();
+                    Vertice dependiente;
+
+                    dependiente = grafo.getVertice(nombreEntregableDepe);
+
+                    grafo.conectar(verticeEntregable.getNombre(), dependiente.getNombre());
+                    dependiente.showVerticesAdyecente();
+                }
+
+                grafo.mostrarGrafo(); 
+                resetTxts(txtDuracionDias ,txtDuracionHrs, txtCostoField);
+                selectorEntregables.removeItem(selectorEntregables.getSelectedItem());
             }
-            
-            grafo.mostrarGrafo(); 
-            resetTxts(txtDuracionDias ,txtDuracionHrs, txtCostoField);
-            selectorEntregables.removeItem(selectorEntregables.getSelectedItem());
         }
         if (ae.getSource() == btnMenu){
             if (menu == 0){
@@ -412,6 +432,5 @@ public class CronogramaGui implements ItemListener, ActionListener{
     public Grafo getGrafo(){
         return grafo;
     }
-    
-    
+
 }

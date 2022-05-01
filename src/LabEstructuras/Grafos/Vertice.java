@@ -2,7 +2,6 @@
 package LabEstructuras.Grafos;
 
 import LabEstructuras.ListaEnlazada;
-import LabEstructuras.Nodo;
 import java.util.Date;
 
 /**
