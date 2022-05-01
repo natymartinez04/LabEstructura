@@ -329,7 +329,7 @@ public class EDTGui implements ItemListener, ActionListener{
     }
     
     private void findPaquetePadre(){
-        if (paquetePadre.length() > 5){
+        if(paquetePadre.length() > display.getNombreProyecto().length()){
             int i = paquetePadre.lastIndexOf(">");
             paquetePadre = paquetePadre.substring(i + 1, paquetePadre.length());
         }
@@ -350,10 +350,10 @@ public class EDTGui implements ItemListener, ActionListener{
                 JOptionPane.showMessageDialog(null, "Por favor seleccione el paquete del entregable");
                 return true;
             }
-            /**if("null".equals(nombreArchivo)){
+            if("null".equals(nombreArchivo)){
                 JOptionPane.showMessageDialog(null, "Por favor seleccione un entregable");
                 return true;
-            }**/
+            }
         }
         return false;
     }    

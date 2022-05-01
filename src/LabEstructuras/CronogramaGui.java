@@ -150,7 +150,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
                     lblEntregables.getY() + lblEntregables.getHeight() + 25, 
                     400, 
                     40);
-        if (selectorDependencia.getItemCount()<3){
+        if (selectorDependencia.getItemCount() < 3){
             selectorDependencia.addItem("-");
             selectorDependencia.addItem("Si");
             selectorDependencia.addItem("No");

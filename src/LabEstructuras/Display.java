@@ -145,6 +145,10 @@ public class Display extends JFrame implements ActionListener{
         return cronogramaGUI;
     }
     
+    public String getNombreProyecto(){
+        return nombreProyecto;
+    }
+    
     public EDTGui getEdt(){
         return edtGUI;
     }
