@@ -23,11 +23,11 @@ public class CronogramaGui implements ItemListener, ActionListener{
     
     private int id = 0;
     private JPanel panelHeader, panelBody;
-    private JLabel lblCronograma, lblEntregables, lblDuracion, lblCosto, lblDependencia,lblPrecedentes;
-    private JComboBox selectorEntregables,selectorDependencia,selectorEntregablesPrecedencia;
+    private JLabel lblCronograma, lblEntregables, lblDuracion, lblCosto, lblDependencia, lblPrecedentes;
+    private JComboBox selectorEntregables, selectorDependencia, selectorEntregablesPrecedencia;
     private JLabel lblDias, lblHrs, lblMin;
     private JTextField txtDuracionDias, txtDuracionHrs, txtDuracionMin, txtCostoField;
-    private JButton btnBackMain, btnMenu, btnGuardar,btnAgregar,btnIrAEDT,btnVisualizar,btnModificarInfo;
+    private JButton btnBackMain, btnMenu, btnGuardar, btnAgregar, btnIrAEDT, btnVisualizar, btnModificarInfo;
     private ListaEnlazada listaEntregables, listaEntregablesPrecedencia;
     private Grafo grafo;
     private Boolean hayEntregableInicial;
@@ -67,6 +67,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
         panelHeader = new JPanel();
         panelBody = new JPanel();
         grafo = new Grafo();
+        hayEntregableInicial = false;
     }
     
     private void addActionListener(){
@@ -76,6 +77,9 @@ public class CronogramaGui implements ItemListener, ActionListener{
         selectorEntregables.addItemListener(this);
         selectorDependencia.addItemListener(this);
         selectorEntregablesPrecedencia.addActionListener(this);
+        btnIrAEDT.addActionListener(this);
+        btnVisualizar.addActionListener(this);
+        btnModificarInfo.addActionListener(this);
     }
     
     public void setUpCronograma(ListaEnlazada listaEntregables){
@@ -84,6 +88,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
         
         Boolean accion = HayEntregables(listaEntregables);
         if (accion){
+            addVerticesAGrafo();
             display.getContainer().setBackground(new Color(200, 227, 250));
 
             lblCronograma.setText("Cronograma");
@@ -226,12 +231,26 @@ public class CronogramaGui implements ItemListener, ActionListener{
         return accion;
     }
 
+    private void addVerticesAGrafo() {
+        NodoLista p = listaEntregables.getPtr();
+        for(int i = 0; i < listaEntregables.getTamaño(); i++){
+            Vertice v = new Vertice((String) p.getNodoArbol().getDato());
+            grafo.addVertice(v);
+            p = p.getLink();
+        }
+    }
+    
     private void AddEntregables(){
         NodoLista p = listaEntregables.getPtr();
         selectorEntregables.removeAllItems();
         selectorEntregables.addItem("-");
         for(int i = 0; i < listaEntregables.getTamaño(); i++){
-            selectorEntregables.addItem(p.getNodoArbol().getDato());
+            Vertice v = grafo.getVertice((String) p.getNodoArbol().getDato());
+            if(v != null){
+                if(!v.isInfoCompleted()){
+                    selectorEntregables.addItem(p.getNodoArbol().getDato());
+                }
+            }
             p = p.getLink();
         }
         
@@ -252,12 +271,16 @@ public class CronogramaGui implements ItemListener, ActionListener{
                 selectorEntregablesPrecedencia.setVisible(false);
                 lblPrecedentes.setText("");
             }
+            if(selectorDependencia.getSelectedItem().equals("No")){
+                hayEntregableInicial = true;
+            }
             
         }
         if (e.getSource() == selectorEntregables){
             selectorEntregablesPrecedencia.removeAllItems();
             selectorDependencia.setSelectedItem("-");
         }
+        
     }
 
     @Override
@@ -274,27 +297,20 @@ public class CronogramaGui implements ItemListener, ActionListener{
             Vertice verticeEntregable;
             String nombre = selectorEntregables.getSelectedItem().toString();
             
-            if(!grafo.existeVertice(nombre)){
-                verticeEntregable = new Vertice(nombre);
-                grafo.addVertice(verticeEntregable);
-            }else{
-                verticeEntregable = grafo.getVertice(nombre);
-            }
+            verticeEntregable = grafo.getVertice(nombre);
             
             verticeEntregable.setDias(Integer.parseInt(txtDuracionDias.getText()));
             verticeEntregable.setHoras(Integer.parseInt(txtDuracionHrs.getText()));
             verticeEntregable.setMinutos(Integer.parseInt(txtDuracionMin.getText()));
             verticeEntregable.setCosto(Integer.parseInt(txtCostoField.getText()));
+            verticeEntregable.setInfoCompleta();
  
             if (selectorDependencia.getSelectedItem().equals("Si")){
                 String nombreEntregableDepe = selectorEntregablesPrecedencia.getSelectedItem().toString();
                 Vertice dependiente;
-                if(!grafo.existeVertice(nombreEntregableDepe)){
-                    dependiente = new Vertice(nombreEntregableDepe);
-                    grafo.addVertice(dependiente);
-                }else{
-                    dependiente = grafo.getVertice(nombreEntregableDepe);
-                }
+                
+                dependiente = grafo.getVertice(nombreEntregableDepe);
+                
                 grafo.conectar(verticeEntregable.getNombre(), dependiente.getNombre());
                 dependiente.showVerticesAdyecente();
             }
@@ -302,8 +318,6 @@ public class CronogramaGui implements ItemListener, ActionListener{
             grafo.mostrarGrafo(); 
             resetTxts(txtDuracionDias ,txtDuracionHrs, txtDuracionMin, txtCostoField);
             selectorEntregables.removeItem(selectorEntregables.getSelectedItem());
-            listaEntregables.delete(nombre);
-            
         }
         if (ae.getSource() == btnMenu){
             if (menu == 0){
@@ -325,6 +339,13 @@ public class CronogramaGui implements ItemListener, ActionListener{
                     lblCosto, txtCostoField,lblDependencia,btnGuardar,lblPrecedentes,selectorEntregablesPrecedencia);
                 
             } 
+        }
+        if (ae.getSource() == btnIrAEDT){
+            display.getContainer().removeAll();
+            display.getContainer().validate();
+            display.getContainer().repaint();
+            display.pantallaPrincipal();
+            display.getBtnEDT().doClick();
         }
         
     }
@@ -396,5 +417,10 @@ public class CronogramaGui implements ItemListener, ActionListener{
             txt.setBorder(null);
         }
     }
+ 
+    public Grafo getGrafo(){
+        return grafo;
+    }
+    
     
 }

@@ -19,7 +19,6 @@ public class Grafo {
     
     public void addVertice(Vertice v){
         if(!existeVertice(v.getNombre())){
-            System.out.println("Vertice agregada");
             vertices.insertN(v);
         } 
     }
@@ -47,7 +46,7 @@ public class Grafo {
     }
     
     public void mostrarGrafo(){
-        System.out.println("\nMostrar Vertices Grafo");
+        System.out.println("Mostrar Vertices Grafo");
         Nodo p = vertices.getPtrN();
         while(p != null){
             Vertice i =(Vertice) p.getDato();

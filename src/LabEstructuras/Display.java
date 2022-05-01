@@ -137,6 +137,18 @@ public class Display extends JFrame implements ActionListener{
         return ymax;
     }
     
+    public JButton getBtnEDT(){
+        return btnEDT;
+    }
+    
+    public CronogramaGui getCronograma(){
+        return cronogramaGUI;
+    }
+    
+    public EDTGui getEdt(){
+        return edtGUI;
+    }
+    
     public String getNameProject(){
         return nombreProyecto;
     }

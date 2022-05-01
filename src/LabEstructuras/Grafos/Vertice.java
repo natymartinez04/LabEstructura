@@ -15,10 +15,12 @@ public class Vertice {
     private String nombre;
     private int dias, horas, minutos, costo;
     private Date fechai;
+    public Boolean infoCompleta;
     private ListaEnlazada verticesAdyacentes;
     
     public Vertice(String nombre){
         this.nombre = nombre;
+        infoCompleta = false;
         verticesAdyacentes = new ListaEnlazada();
     }
 
@@ -28,6 +30,7 @@ public class Vertice {
         this.horas = horas;
         this.minutos = minutos;
         this.costo = costo;
+        infoCompleta = false;
         verticesAdyacentes = new ListaEnlazada();
     }
     
@@ -36,13 +39,13 @@ public class Vertice {
     }
     
     public void showVerticesAdyecente(){
-        System.out.println("Vertices Adyacentes de " + nombre);
+        //System.out.println("Vertices Adyacentes de " + nombre);
         for(int i = 0; i <= verticesAdyacentes.getTamañoN(); i++){
             Vertice v = (Vertice)verticesAdyacentes.getInfoNodo(i);
             if(v != null){
-                System.out.print(v.getNombre() + " --> ");
+                //System.out.print(v.getNombre() + " --> ");
             }else{
-                System.out.print(" null ");
+                //System.out.print(" null ");
             }
         }
     }
@@ -86,12 +89,21 @@ public class Vertice {
     public void setCosto(int costo) {
         this.costo = costo;
     }
+    
     public Date getFechai() {
         return fechai;
     }
 
     public void setFechai(Date fechai) {
         this.fechai = fechai;
+    }
+    
+    public Boolean isInfoCompleted(){
+        return infoCompleta;
+    }
+    
+    public void setInfoCompleta(){
+        this.infoCompleta = true;
     }
     
     public ListaEnlazada getVerticesAdyacentes(){
