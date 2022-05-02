@@ -2,6 +2,8 @@
 package LabEstructuras.Grafos;
 
 import LabEstructuras.ListaEnlazada;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.Date;
 
 /**
@@ -12,6 +14,8 @@ import java.util.Date;
 public class Vertice {
     
     private String nombre;
+    private int x, y;
+    private int tam;
     private int dias, horas, costo;
     private Date fechai;
     public Boolean infoCompleta;
@@ -48,8 +52,27 @@ public class Vertice {
         }
     }
     
+    public void setXPosition(int x){
+        this.x = x;
+    }
+    
+    public void setYPosition(int y){
+        this.y = y;
+    }
+    
+    public void setTamaño(int tam){
+        this.tam = tam;
+    }
+    
+    public void draw(Graphics g){
+        g.setColor(Color.RED);
+        g.drawOval(this.x - this.tam/2, this.y - this.tam/2, this.tam, this.tam);
+        g.drawString(this.nombre, this.x + 5, this.y + 10);
+    }
+    
     public void setNombre(String nombre){
         this.nombre = nombre;
+        setTamaño(nombre.length() * 15);
     }
     
     public String getNombre(){

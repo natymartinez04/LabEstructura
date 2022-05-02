@@ -2,6 +2,7 @@
 package LabEstructuras;
 
 import LabEstructuras.Grafos.Grafo;
+import LabEstructuras.Grafos.Lienzo;
 import LabEstructuras.Grafos.Vertice;
 import java.awt.Color;
 import java.awt.Font;
@@ -31,6 +32,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
     private ListaEnlazada listaEntregables, listaEntregablesPrecedencia;
     private Grafo grafo;
     private Boolean hayEntregableInicial;
+    private Lienzo lienzo;
     int menu;
     
     public CronogramaGui(Display display){
@@ -109,11 +111,16 @@ public class CronogramaGui implements ItemListener, ActionListener{
             panelBody.setBounds(0, panelHeader.getHeight(), display.getXmax(), display.getYmax());
             panelBody.setBackground(new Color(200, 227, 250));
             panelBody.setLayout(null);
-
-            setPanelBody();
-
-            display.addToContainer(panelHeader, panelBody);
-            display.getContainer().validate();
+            
+            lienzo = new Lienzo(listaEntregables);
+            lienzo.setBounds(0, 0, 200, 200);
+            lienzo.setBackground(Color.BLACK);
+            lienzo.setVisible(true);
+            //panelBody.add(lienzo);
+            
+            display.addToContainer(lienzo, panelHeader, panelBody);
+            
+            display.getContainer().revalidate();
             display.getContainer().repaint();
             
         }else{
@@ -137,6 +144,7 @@ public class CronogramaGui implements ItemListener, ActionListener{
     }
     
     private void setPanelBody(){
+
         lblEntregables.setText("Entregables:");
         lblEntregables.setBounds(120, panelHeader.getHeight() + 30, 350, 45);
         
@@ -339,8 +347,8 @@ public class CronogramaGui implements ItemListener, ActionListener{
                 menuPanel.setVisible(true);
                 MoveItemsRight(selectorEntregables,selectorDependencia, lblEntregables, 
                     lblDuracion, txtDuracionDias, lblDias, txtDuracionHrs, lblHrs, lblCosto, 
-                    txtCostoField,lblDependencia,btnGuardar,lblPrecedentes,selectorEntregablesPrecedencia);
-                addObjectToPanel(menuPanel,btnIrAEDT,btnVisualizar,btnModificarInfo);
+                    txtCostoField,lblDependencia, btnGuardar, lblPrecedentes, selectorEntregablesPrecedencia);
+                addObjectToPanel(menuPanel, btnIrAEDT, btnVisualizar, btnModificarInfo);
                 menuPanel.setLayout(null);
                 SetBotones();
                 menu = 1;
@@ -349,9 +357,18 @@ public class CronogramaGui implements ItemListener, ActionListener{
                 menu = 0;
                 MoveItemsLeft(selectorEntregables,selectorDependencia, lblEntregables, 
                     lblDuracion, txtDuracionDias, lblDias, txtDuracionHrs, lblHrs, lblCosto, 
-                    txtCostoField,lblDependencia,btnGuardar,lblPrecedentes,selectorEntregablesPrecedencia);
+                    txtCostoField, lblDependencia, btnGuardar, lblPrecedentes, selectorEntregablesPrecedencia);
             } 
         }
+        
+        if(ae.getSource() == btnVisualizar){
+            lienzo.setVisible(true);
+            panelBody.setVisible(false);
+            
+            display.getContainer().validate();
+            display.getContainer().repaint();
+        }
+        
         if (ae.getSource() == btnIrAEDT){
             display.getContainer().removeAll();
             display.getContainer().validate();
